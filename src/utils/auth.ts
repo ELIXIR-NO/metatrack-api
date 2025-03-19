@@ -18,6 +18,5 @@ export const auth = betterAuth({
 		enabled: true,
 	},
 	plugins: [openAPI()],
+	trustedOrigins: ["http://localhost:3001"],
 });
-
-export const betterAuthOpenAPI = await auth.api.generateOpenAPISchema();
