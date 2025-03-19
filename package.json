@@ -6,11 +6,20 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/swagger": "^1.2.2",
+    "drizzle-orm": "^0.40.1",
+    "drizzle-typebox": "^0.3.0",
+    "elysia": "latest",
+    "pg": "^8.14.1"
   },
   "devDependencies": {
+    "@types/pg": "^8.11.11",
     "bun-types": "latest",
+    "drizzle-kit": "^0.30.5",
     "prettier": "^3.5.3"
+  },
+  "overrides": {
+    "@sinclair/typebox": "0.34.27"
   },
   "module": "src/index.js"
 }

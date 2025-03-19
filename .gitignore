@@ -46,3 +46,7 @@ package-lock.json
 .vscode/
 .zed/
 .fleet/
+
+# ENV
+.env
+!.env.development
