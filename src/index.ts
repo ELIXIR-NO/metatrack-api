@@ -4,6 +4,7 @@ import swagger from "@elysiajs/swagger";
 
 import betterAuthView from "./utils/auth-view";
 import { betterAuth } from "./middlewares/betterAuth";
+import { handlers } from "./handlers";
 
 const app = new Elysia()
 	.use(
@@ -19,6 +20,7 @@ const app = new Elysia()
 			path: "/api/app/reference",
 		}),
 	)
+	.use(handlers)
 	.use(betterAuth)
 	.all("/api/auth/*", betterAuthView)
 	.get("/", () => "Hello Elysia")
