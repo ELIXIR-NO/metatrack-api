@@ -16,9 +16,9 @@ export const projectsHandler = new Elysia({
 })
 	.get("/", async (ctx) => await getAllProjects())
 	.get(
-		"/:id",
-		async ({ error, params: { id } }) => {
-			const result = await getProjectById(id);
+		"/:projectId",
+		async ({ error, params: { projectId } }) => {
+			const result = await getProjectById(projectId);
 			if (!result) return error(404, "Not Found");
 
 			return result;
@@ -72,17 +72,17 @@ export const projectsHandler = new Elysia({
 		},
 	)
 	.put(
-		"/:id",
-		async ({ set, request, params: { id }, body, error }) => {
+		"/:projectId",
+		async ({ set, request, params: { projectId }, body, error }) => {
 			const session = await auth.api.getSession({ headers: request.headers });
 			if (!session?.session) return error(401, "Unauthorized");
 
 			const userId = session.user.id;
-			const project = await getProjectById(id);
+			const project = await getProjectById(projectId);
 			if (!project) return error(404, "Not Found");
 
 			try {
-				const userRole = await getUserRole(id, userId);
+				const userRole = await getUserRole(projectId, userId);
 				if (userRole !== "owner") return error(403, "Forbidden");
 
 				try {
@@ -103,17 +103,17 @@ export const projectsHandler = new Elysia({
 		},
 	)
 	.delete(
-		"/:id",
-		async ({ set, error, request, params: { id } }) => {
+		"/:projectId",
+		async ({ set, error, request, params: { projectId } }) => {
 			const session = await auth.api.getSession({ headers: request.headers });
 			if (!session?.session) return error(401, "Unauthorized");
 
 			try {
-				const userRole = await getUserRole(id, session.user.id);
+				const userRole = await getUserRole(projectId, session.user.id);
 				if (userRole !== "owner") return error(403, "Forbidden");
 
 				try {
-					await deleteProject(id);
+					await deleteProject(projectId);
 					set.status = "No Content";
 				} catch {
 					return error(500, "Internal Server Error");
