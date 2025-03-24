@@ -8,7 +8,7 @@ import {
 	getProjectById,
 	getUserRole,
 	updateProject,
-} from "../lib/project";
+} from "../lib/projectHelpers";
 
 export const projectsHandler = new Elysia({
 	prefix: "/projects",
