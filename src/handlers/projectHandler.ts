@@ -1,18 +1,27 @@
 import { Elysia, t } from "elysia";
-import { db } from "../db";
-import { projectMember, projects } from "../db/schema/project-schema";
-import { eq } from "drizzle-orm";
 import { auth } from "../utils/auth";
 
-export const projectsHandler = new Elysia({ prefix: "/projects" })
-	.get("/", async (ctx) => await db.select().from(projects))
+import {
+	createProject,
+	deleteProject,
+	getAllProjects,
+	getProjectById,
+	getUserRole,
+	updateProject,
+} from "../lib/project";
+
+export const projectsHandler = new Elysia({
+	prefix: "/projects",
+	tags: ["projects"],
+})
+	.get("/", async (ctx) => await getAllProjects())
 	.get(
 		"/:id",
 		async ({ error, params: { id } }) => {
 			const result = await getProjectById(id);
-			if (!result.length) return error(404, "Not Found");
+			if (!result) return error(404, "Not Found");
 
-			return result[0];
+			return result;
 		},
 		{
 			detail: {
@@ -62,43 +71,52 @@ export const projectsHandler = new Elysia({ prefix: "/projects" })
 			}),
 		},
 	)
-	.patch("/:id", ({ params: { id } }) => {}, {
-		body: t.Object({
-			name: t.Optional(t.String()),
-			description: t.Optional(t.String()),
-		}),
+	.put(
+		"/:id",
+		async ({ set, request, params: { id }, body, error }) => {
+			const session = await auth.api.getSession({ headers: request.headers });
+			if (!session?.session) return error(401, "Unauthorized");
+
+			const userId = session.user.id;
+			const project = await getProjectById(id);
+			if (!project) return error(404, "Not Found");
+
+			try {
+				const userRole = await getUserRole(id, userId);
+				if (userRole !== "owner") return error(403, "Forbidden");
+
+				try {
+					const updated = await updateProject(project.id, body);
+					return updated;
+				} catch {
+					return error(500, "Internal Server Error");
+				}
+			} catch (err) {
+				if (err instanceof Error) return error(403, "Forbidden");
+			}
+		},
+		{
+			body: t.Object({
+				name: t.Optional(t.String()),
+				description: t.Optional(t.String()),
+			}),
+		},
+	)
+	.delete("/:id", async ({ set, error, request, params: { id } }) => {
+		const session = await auth.api.getSession({ headers: request.headers });
+		if (!session?.session) return error(401, "Unauthorized");
+
+		try {
+			const userRole = await getUserRole(id, session.user.id);
+			if (userRole !== "owner") return error(403, "Forbidden");
+
+			try {
+				await deleteProject(id);
+				set.status = "No Content";
+			} catch {
+				return error(500, "Internal Server Error");
+			}
+		} catch (err) {
+			if (err instanceof Error) return error(403, "Forbidden");
+		}
 	});
-
-async function getProjectById(id: string) {
-	return await db.select().from(projects).where(eq(projects.id, id));
-}
-
-async function createProject(
-	userId: string,
-	name: string,
-	description: string | undefined,
-) {
-	const currentTime = new Date();
-
-	try {
-		const trans = await db.transaction(async (trx) => {
-			const createdProj = await trx
-				.insert(projects)
-				.values({
-					name,
-					description,
-					createdAt: currentTime,
-					updatedAt: currentTime,
-				})
-				.returning();
-
-			await trx.insert(projectMember).values({
-				memberId: userId,
-				projectId: createdProj[0].id,
-				role: "owner",
-			});
-		});
-	} catch {
-		throw new Error("Could not create project");
-	}
-}
