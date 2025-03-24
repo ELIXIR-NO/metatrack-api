@@ -3,5 +3,5 @@ import { ontologySourceHandler } from "./ontologySourceHandler";
 import { ontologyAnnotationHandler } from "./ontologyAnnotationHandler";
 
 export const ontologyHandlers = new Elysia()
-	.use(ontologySourceHandler)
-	.use(ontologyAnnotationHandler);
+	.use(ontologyAnnotationHandler)
+	.use(ontologySourceHandler);
