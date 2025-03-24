@@ -30,8 +30,6 @@ export const projectsHandler = new Elysia({ prefix: "/projects" })
 	.post(
 		"/",
 		async ({ set, request, body: { name, description }, error }) => {
-			if (!name) return error(400, "Bad Request");
-
 			const session = await auth.api.getSession({ headers: request.headers });
 			if (!session?.user) return error(401, "Unauthorized");
 
@@ -63,7 +61,13 @@ export const projectsHandler = new Elysia({ prefix: "/projects" })
 				description: t.Optional(t.String()),
 			}),
 		},
-	);
+	)
+	.patch("/:id", ({ params: { id } }) => {}, {
+		body: t.Object({
+			name: t.Optional(t.String()),
+			description: t.Optional(t.String()),
+		}),
+	});
 
 async function getProjectById(id: string) {
 	return await db.select().from(projects).where(eq(projects.id, id));
