@@ -102,21 +102,42 @@ export const projectsHandler = new Elysia({
 			}),
 		},
 	)
-	.delete("/:id", async ({ set, error, request, params: { id } }) => {
-		const session = await auth.api.getSession({ headers: request.headers });
-		if (!session?.session) return error(401, "Unauthorized");
-
-		try {
-			const userRole = await getUserRole(id, session.user.id);
-			if (userRole !== "owner") return error(403, "Forbidden");
+	.delete(
+		"/:id",
+		async ({ set, error, request, params: { id } }) => {
+			const session = await auth.api.getSession({ headers: request.headers });
+			if (!session?.session) return error(401, "Unauthorized");
 
 			try {
-				await deleteProject(id);
-				set.status = "No Content";
-			} catch {
-				return error(500, "Internal Server Error");
+				const userRole = await getUserRole(id, session.user.id);
+				if (userRole !== "owner") return error(403, "Forbidden");
+
+				try {
+					await deleteProject(id);
+					set.status = "No Content";
+				} catch {
+					return error(500, "Internal Server Error");
+				}
+			} catch (err) {
+				if (err instanceof Error) return error(403, "Forbidden");
 			}
-		} catch (err) {
-			if (err instanceof Error) return error(403, "Forbidden");
-		}
-	});
+		},
+		{
+			detail: {
+				responses: {
+					203: {
+						description: "No content",
+					},
+					401: {
+						description: "Unauthorized",
+					},
+					403: {
+						description: "Forbidden",
+					},
+					500: {
+						description: "Internal Server Error",
+					},
+				},
+			},
+		},
+	);
