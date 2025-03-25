@@ -25,15 +25,20 @@ import {
 	sources,
 	studyMaterials,
 	assayMaterials,
+	projects,
 } from "./schema";
 
 export const investigationsRelations = relations(
 	investigations,
-	({ many }) => ({
+	({ one, many }) => ({
 		ontologySourceReferences: many(ontologySources),
 		publications: many(publications),
 		people: many(people),
 		studies: many(studies),
+		project: one(projects, {
+			fields: [investigations.project],
+			references: [projects.id],
+		}),
 	}),
 );
 

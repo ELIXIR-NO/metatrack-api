@@ -8,6 +8,7 @@ import {
 	numeric,
 	primaryKey,
 } from "drizzle-orm/pg-core";
+import { projects } from "./project-schema";
 
 export const investigations = pgTable("investigation", {
 	id: uuid().defaultRandom().primaryKey(),
@@ -19,6 +20,7 @@ export const investigations = pgTable("investigation", {
 	description: text(),
 	submissionDate: date(),
 	publicReleaseDate: date(),
+	project: uuid().references(() => projects.id, { onDelete: "cascade" }),
 });
 
 export const studies = pgTable("study", {
