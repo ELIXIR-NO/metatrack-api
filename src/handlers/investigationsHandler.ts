@@ -1,12 +1,12 @@
 import Elysia, { t } from "elysia";
+
 import { auth } from "../utils/auth";
 import { getUserMembership } from "../lib/sharedHelpers";
+import { getUserRole } from "../lib/projectHelpers";
 import {
-	createInvestigationSchema,
 	getAllInvestigations,
 	getInvestigationById,
 } from "../lib/investigationHelpers";
-import { getUserRole } from "../lib/projectHelpers";
 
 export const invetigationsHandler = new Elysia({
 	prefix: "/projects/:projectId/investigations",
@@ -68,30 +68,6 @@ export const invetigationsHandler = new Elysia({
 			},
 		},
 	)
-	.post(
-		"/",
-		async ({ params: { projectId }, request, body, error }) => {
-			const session = await auth.api.getSession({ headers: request.headers });
-			if (!session?.session) return error(401, "Unauthorized");
-
-			const userRole = await getUserRole(projectId, session.user.id);
-			if (!userRole || userRole === "pending" || userRole === "reader")
-				return error(403, "Forbidden");
-		},
-		{
-			body: createInvestigationSchema,
-			detail: {
-				responses: {
-					401: {
-						description: "Unauthorized",
-					},
-					403: {
-						description:
-							"Current user likely doesn't have the right role to perform this action",
-					},
-				},
-			},
-		},
-	)
+	.post("/", async () => {})
 	.put("/:investigationId", async () => {})
 	.delete("/:investigationId", async () => {});
