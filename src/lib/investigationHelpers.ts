@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { investigations } from "../db/schema";
 import { Static, t } from "elysia";
@@ -15,9 +15,10 @@ export const Investigation = t.Object({
 	studies: t.Optional(t.Array(t.String())),
 });
 
-export const EditInvestigaiton = t.Omit(Investigation, ["identifier"]);
-
 export type TInvestigation = Static<typeof Investigation>;
+
+export const EditInvestigaiton = t.Omit(Investigation, ["identifier"]);
+export type TEditInvestigation = Static<typeof EditInvestigaiton>;
 
 export async function getAllInvestigations(projectId: string) {
 	return await db.query.investigations.findMany({
@@ -40,4 +41,46 @@ export async function saveInvestigation(
 		.insert(investigations)
 		.values({ ...data, createdAt: currentTime, updatedAt: currentTime })
 		.returning();
+}
+
+export async function updateInvestigation(
+	data: TEditInvestigation,
+	projectId: string,
+	investigationId: string,
+) {
+	const investigation = getInvestigationById(investigationId);
+	if (investigation === undefined) return undefined;
+
+	const currentTime = new Date();
+	return await db
+		.update(investigations)
+		.set({ ...data, updatedAt: currentTime })
+		.where(
+			and(
+				eq(investigations.project, projectId),
+				eq(investigations.id, investigationId),
+			),
+		);
+}
+
+export async function deleteInvestigation(
+	projectId: string,
+	investigationId: string,
+) {
+	const investigation = await db.query.investigations.findFirst({
+		where: and(
+			eq(investigations.project, projectId),
+			eq(investigations.id, investigationId),
+		),
+	});
+	if (investigation === undefined) return undefined;
+
+	return await db
+		.delete(investigations)
+		.where(
+			and(
+				eq(investigations.project, projectId),
+				eq(investigations.id, investigationId),
+			),
+		);
 }
