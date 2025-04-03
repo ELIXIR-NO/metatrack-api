@@ -2,6 +2,37 @@ import { eq, and } from "drizzle-orm";
 import { db } from "../db";
 import { projects, projectMember } from "../db/schema";
 
+export async function getUserRole(projectId: string, userId: string) {
+	const userRole = await db.query.projectMember.findFirst({
+		where: and(
+			eq(projectMember.projectId, projectId),
+			eq(projectMember.memberId, userId),
+		),
+		columns: {
+			role: true,
+		},
+	});
+	if (!userRole) throw new Error("User not a member");
+
+	return userRole.role;
+}
+
+export async function canRead(userId: string, projectId: string) {
+	const userRole = await getUserRole(projectId, userId);
+	if (!userRole || userRole === "pending") return false;
+
+	return true;
+}
+
+export async function canWrite(userId: string, projectId: string) {
+	const userRole = await getUserRole(projectId, userId);
+
+	if (!userRole || userRole === "pending" || userRole === "reader")
+		return false;
+
+	return true;
+}
+
 export async function getAllProjects() {
 	return await db.query.projects.findMany();
 }
@@ -20,7 +51,7 @@ export async function createProject(
 	const currentTime = new Date();
 
 	try {
-		const trans = await db.transaction(async (trx) => {
+		await db.transaction(async (trx) => {
 			const createdProj = await trx
 				.insert(projects)
 				.values({
@@ -40,21 +71,6 @@ export async function createProject(
 	} catch {
 		throw new Error("Could not create project");
 	}
-}
-
-export async function getUserRole(projectId: string, userId: string) {
-	const userRole = await db.query.projectMember.findFirst({
-		where: and(
-			eq(projectMember.projectId, projectId),
-			eq(projectMember.memberId, userId),
-		),
-		columns: {
-			role: true,
-		},
-	});
-	if (!userRole) throw new Error("User not a member");
-
-	return userRole.role;
 }
 
 export async function updateProject(
