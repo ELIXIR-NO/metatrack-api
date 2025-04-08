@@ -18,11 +18,7 @@ export const ontologyAnnotationHandler = new Elysia({
 })
 	.get(
 		"/",
-		async ({
-			params: { projectId, investigationId, ontologySourceId },
-			request,
-			error,
-		}) => {
+		async ({ params: { projectId, ontologySourceId }, request, error }) => {
 			const session = await auth.api.getSession({ headers: request.headers });
 			if (!session?.session) return error(401, "Unauthorized");
 
@@ -31,6 +27,7 @@ export const ontologyAnnotationHandler = new Elysia({
 
 			try {
 				const annotations = await getAllAnnotations(ontologySourceId);
+				return annotations;
 			} catch {
 				return error(500, "Internal Server Error");
 			}
@@ -39,12 +36,7 @@ export const ontologyAnnotationHandler = new Elysia({
 	.get(
 		"/:ontologyAnnotationId",
 		async ({
-			params: {
-				projectId,
-				investigationId,
-				ontologySourceId,
-				ontologyAnnotationId,
-			},
+			params: { projectId, ontologySourceId, ontologyAnnotationId },
 			request,
 			error,
 		}) => {
@@ -68,12 +60,7 @@ export const ontologyAnnotationHandler = new Elysia({
 	)
 	.post(
 		"/",
-		async ({
-			params: { projectId, investigationId, ontologySourceId },
-			request,
-			error,
-			body,
-		}) => {
+		async ({ params: { projectId }, request, error, body }) => {
 			const session = await auth.api.getSession({ headers: request.headers });
 			if (!session?.session) return error(401, "Unauthorized");
 
@@ -96,12 +83,7 @@ export const ontologyAnnotationHandler = new Elysia({
 	.put(
 		"/:ontologyAnnotationId",
 		async ({
-			params: {
-				projectId,
-				investigationId,
-				ontologySourceId,
-				ontologyAnnotationId,
-			},
+			params: { projectId, ontologyAnnotationId },
 			request,
 			error,
 			body,
@@ -113,7 +95,7 @@ export const ontologyAnnotationHandler = new Elysia({
 			if (!checkPermission) return error(403, "Forbidden");
 
 			try {
-				const result = await updateAnnoations(body, ontologyAnnotationId);
+				await updateAnnoations(body, ontologyAnnotationId);
 			} catch {
 				return error(500, "Internal Server Error");
 			}
@@ -125,12 +107,7 @@ export const ontologyAnnotationHandler = new Elysia({
 	.delete(
 		"/:ontologyAnnotationId",
 		async ({
-			params: {
-				projectId,
-				investigationId,
-				ontologySourceId,
-				ontologyAnnotationId,
-			},
+			params: { projectId, ontologySourceId, ontologyAnnotationId },
 			request,
 			error,
 			set,
