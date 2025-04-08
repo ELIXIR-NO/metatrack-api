@@ -39,7 +39,12 @@ export async function saveInvestigation(
 	const currentTime = new Date();
 	return await db
 		.insert(investigations)
-		.values({ ...data, createdAt: currentTime, updatedAt: currentTime })
+		.values({
+			...data,
+			createdAt: currentTime,
+			updatedAt: currentTime,
+			project: projectId,
+		})
 		.returning();
 }
 
