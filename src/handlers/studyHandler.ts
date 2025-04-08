@@ -35,11 +35,7 @@ export const studyHandler = new Elysia({
 	)
 	.get(
 		"/:studyId",
-		async ({
-			params: { projectId, investigationId, studyId },
-			error,
-			request,
-		}) => {
+		async ({ params: { projectId, studyId }, error, request }) => {
 			const session = await auth.api.getSession({ headers: request.headers });
 			if (!session?.session) return error(401, "Unauthorized");
 
