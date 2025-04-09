@@ -55,10 +55,8 @@ export const assays = pgTable("assay", {
 		.references(() => studies.id, { onDelete: "cascade" }),
 	technologyPlatform: text(),
 	materials: uuid(),
-	characteristicCategories: uuid(),
 	measurementType: uuid(),
 	technologyType: uuid(),
-	unitCategories: uuid(),
 });
 
 export const assayMaterials = pgTable("assay_material", {
