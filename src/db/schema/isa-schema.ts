@@ -9,7 +9,6 @@ import {
 	primaryKey,
 } from "drizzle-orm/pg-core";
 import { projects } from "./project-schema";
-import { Investigation } from "../../lib/investigationHelpers";
 
 export const investigations = pgTable("investigation", {
 	id: uuid().defaultRandom().primaryKey(),
