@@ -104,6 +104,13 @@ export const assayMaterialRelations = relations(assayMaterials, ({ many }) => ({
 	materials: many(materials),
 }));
 
+export const dataRelations = relations(data, ({ one }) => ({
+	investigation: one(investigations, {
+		fields: [data.investigation],
+		references: [investigations.id],
+	}),
+}));
+
 export const factorRelations = relations(factors, ({ one }) => ({
 	factoryType: one(ontologyAnnotations, {
 		fields: [factors.factorType],

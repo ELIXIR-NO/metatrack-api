@@ -9,6 +9,7 @@ import {
 	primaryKey,
 } from "drizzle-orm/pg-core";
 import { projects } from "./project-schema";
+import { Investigation } from "../../lib/investigationHelpers";
 
 export const investigations = pgTable("investigation", {
 	id: uuid().defaultRandom().primaryKey(),
@@ -77,6 +78,7 @@ export const data = pgTable("data", {
 	updatedAt: timestamp("updated_at").notNull(),
 	name: text(),
 	dataType: dataTypeEnum(),
+	investigation: uuid(),
 });
 
 export const factors = pgTable("factor", {
