@@ -75,10 +75,6 @@ export const assayRelations = relations(assays, ({ one, many }) => ({
 	}),
 	dataFiles: many(data),
 	characteristicCategories: many(materialAttributes),
-	// characteristicCategories: one(materialAttributes, {
-	// 	fields: [assays.characteristicCategories],
-	// 	references: [materialAttributes.id],
-	// }),
 	measurementType: one(ontologyAnnotations, {
 		fields: [assays.measurementType],
 		references: [ontologyAnnotations.id],
@@ -88,10 +84,6 @@ export const assayRelations = relations(assays, ({ one, many }) => ({
 		references: [ontologyAnnotations.id],
 	}),
 	unitCategories: many(ontologyAnnotations),
-	// unitCategories: one(ontologyAnnotations, {
-	// 	fields: [assays.unitCategories],
-	// 	references: [ontologyAnnotations.id],
-	// }),
 	processSequence: many(processes),
 	materials: one(assayMaterials, {
 		fields: [assays.materials],
