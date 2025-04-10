@@ -86,6 +86,7 @@ export const factors = pgTable("factor", {
 	updatedAt: timestamp("updated_at").notNull(),
 	factorName: text(),
 	factorType: uuid(),
+	investigation: uuid(),
 });
 
 export const valueTypeEnum = pgEnum("factor_value_type", [
