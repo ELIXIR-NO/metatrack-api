@@ -7,6 +7,7 @@ import {
 	uuid,
 	numeric,
 	primaryKey,
+	doublePrecision,
 } from "drizzle-orm/pg-core";
 import { projects } from "./project-schema";
 
@@ -103,8 +104,9 @@ export const factorValues = pgTable("factor_value", {
 	factorValueType: valueTypeEnum(),
 	ontologyValue: uuid(),
 	stringValue: text(),
-	numValue: numeric(),
+	numValue: doublePrecision(),
 	unit: uuid(),
+	factor: uuid(),
 });
 
 export const materialAttributes = pgTable("material_attribute", {

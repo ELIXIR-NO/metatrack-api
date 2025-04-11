@@ -127,6 +127,10 @@ export const factorValueRelations = relations(factorValues, ({ one }) => ({
 		fields: [factorValues.unit],
 		references: [ontologyAnnotations.id],
 	}),
+	investigation: one(factors, {
+		fields: [factorValues.factor],
+		references: [factors.id],
+	}),
 }));
 
 export const materialAttributeRelations = relations(
