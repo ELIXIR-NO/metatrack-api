@@ -5,7 +5,6 @@ import {
 	text,
 	timestamp,
 	uuid,
-	numeric,
 	primaryKey,
 	doublePrecision,
 } from "drizzle-orm/pg-core";
@@ -125,8 +124,9 @@ export const materialAttributeValues = pgTable("material_attribute_value", {
 	valueType: valueTypeEnum(),
 	ontologyValue: uuid(),
 	stringValue: text(),
-	numValue: numeric(),
+	numValue: doublePrecision(),
 	unit: uuid(),
+	investigation: uuid(),
 });
 
 export const materialTypeEnum = pgEnum("material_type", [

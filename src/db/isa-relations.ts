@@ -162,6 +162,10 @@ export const materialAttributeValueRelations = relations(
 			fields: [materialAttributeValues.unit],
 			references: [ontologyAnnotations.id],
 		}),
+		investigation: one(investigations, {
+			fields: [materialAttributeValues.investigation],
+			references: [investigations.id],
+		}),
 	}),
 );
 
