@@ -114,6 +114,7 @@ export const materialAttributes = pgTable("material_attribute", {
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
 	characteristicType: uuid(),
+	investigation: uuid(),
 });
 
 export const materialAttributeValues = pgTable("material_attribute_value", {
