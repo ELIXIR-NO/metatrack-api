@@ -46,7 +46,7 @@ export async function getAnnotationById(
 	});
 }
 
-export async function updateAnnoations(
+export async function updateAnnotations(
 	data: TEditAnnotation,
 	annotationId: string,
 ) {
@@ -57,7 +57,7 @@ export async function updateAnnoations(
 		.where(eq(ontologyAnnotations.id, annotationId));
 }
 
-export async function deleteAnnoation(
+export async function deleteAnnotation(
 	annotationId: string,
 	ontologySourceId: string,
 ) {

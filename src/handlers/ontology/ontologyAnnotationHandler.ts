@@ -4,11 +4,11 @@ import { auth } from "../../utils/auth";
 import {
 	createAnnotation,
 	CreateAnnotation,
-	deleteAnnoation,
+	deleteAnnotation,
 	EditAnnotation,
 	getAllAnnotations,
 	getAnnotationById,
-	updateAnnoations,
+	updateAnnotations,
 } from "../../lib/ontologyAnnotationHelpers";
 
 export const ontologyAnnotationHandler = new Elysia({
@@ -95,7 +95,7 @@ export const ontologyAnnotationHandler = new Elysia({
 			if (!checkPermission) return error(403, "Forbidden");
 
 			try {
-				await updateAnnoations(body, ontologyAnnotationId);
+				await updateAnnotations(body, ontologyAnnotationId);
 			} catch {
 				return error(500, "Internal Server Error");
 			}
@@ -119,7 +119,7 @@ export const ontologyAnnotationHandler = new Elysia({
 			if (!checkPermission) return error(403, "Forbidden");
 
 			try {
-				await deleteAnnoation(ontologyAnnotationId, ontologySourceId);
+				await deleteAnnotation(ontologyAnnotationId, ontologySourceId);
 				set.status = 204;
 			} catch {
 				return error(500, "Internal Server Error");
