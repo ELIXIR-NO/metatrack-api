@@ -236,6 +236,10 @@ export const processParameterValueRelations = relations(
 			fields: [processParameterValues.unit],
 			references: [ontologyAnnotations.id],
 		}),
+		process: one(processes, {
+			fields: [processParameterValues.process],
+			references: [processes.id],
+		}),
 	}),
 );
 

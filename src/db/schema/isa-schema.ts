@@ -203,8 +203,9 @@ export const processParameterValues = pgTable("process_parameter_value", {
 	valueType: valueTypeEnum(),
 	ontologyValue: uuid(),
 	stringValue: text(),
-	numValue: text(),
+	numValue: doublePrecision(),
 	unit: uuid(),
+	process: uuid(),
 });
 
 export const processes = pgTable("process", {
