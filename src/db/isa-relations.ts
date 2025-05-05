@@ -213,8 +213,12 @@ export const ontologySourceRelations = relations(
 	}),
 );
 
-export const peopleRelations = relations(people, ({ many }) => ({
+export const peopleRelations = relations(people, ({ one, many }) => ({
 	roles: many(ontologyAnnotations),
+	investigation: one(investigations, {
+		fields: [people.investigation],
+		references: [investigations.id],
+	}),
 }));
 
 export const processParameterValueRelations = relations(

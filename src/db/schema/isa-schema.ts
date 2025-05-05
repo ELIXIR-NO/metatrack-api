@@ -192,6 +192,7 @@ export const people = pgTable("person", {
 	fax: text(),
 	address: text(),
 	affiliation: text(),
+	investigation: uuid(),
 });
 
 export const processParameterValues = pgTable("process_parameter_value", {
