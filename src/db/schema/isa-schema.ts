@@ -218,6 +218,7 @@ export const processes = pgTable("process", {
 	date: date(),
 	previousProcess: uuid(),
 	nextProcess: uuid(),
+	investigation: uuid(),
 });
 
 export const processInputTypeEnum = pgEnum("process_input_type", [

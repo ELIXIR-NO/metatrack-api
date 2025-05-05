@@ -259,6 +259,10 @@ export const processRelations = relations(processes, ({ one, many }) => ({
 	}),
 	inputs: many(processInputs),
 	outputs: many(processOutputs),
+	investigation: one(investigations, {
+		fields: [processes.investigation],
+		references: [investigations.id],
+	}),
 }));
 
 export const processInputRelations = relations(processInputs, ({ one }) => ({
