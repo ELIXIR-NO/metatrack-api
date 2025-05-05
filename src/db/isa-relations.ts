@@ -306,6 +306,10 @@ export const protocolParameterRelations = relations(
 			fields: [protocolParameters.parameterName],
 			references: [ontologyAnnotations.id],
 		}),
+		protocol: one(protocols, {
+			fields: [protocolParameters.protocol],
+			references: [protocols.id],
+		}),
 	}),
 );
 

@@ -260,6 +260,7 @@ export const protocolParameters = pgTable("protocol_parameter", {
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
 	parameterName: uuid(),
+	protocol: uuid(),
 });
 
 export const protocols = pgTable("protocol", {
