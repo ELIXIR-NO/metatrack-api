@@ -169,9 +169,13 @@ export const materialAttributeValueRelations = relations(
 	}),
 );
 
-export const materialRelations = relations(materials, ({ many }) => ({
+export const materialRelations = relations(materials, ({ one, many }) => ({
 	characteristics: many(materialAttributeValues),
 	derivesFrom: many(materialDerivations),
+	investigation: one(investigations, {
+		fields: [materials.investigation],
+		references: [investigations.id],
+	}),
 }));
 
 export const materialDerivationRelations = relations(

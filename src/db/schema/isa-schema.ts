@@ -140,6 +140,7 @@ export const materials = pgTable("material", {
 	updatedAt: timestamp("updated_at").notNull(),
 	name: text(),
 	type: materialTypeEnum(),
+	investigation: uuid(),
 });
 
 export const materialDerivations = pgTable(
