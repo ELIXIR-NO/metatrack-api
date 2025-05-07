@@ -320,6 +320,10 @@ export const protocolRelations = relations(protocols, ({ one, many }) => ({
 	}),
 	parameters: many(protocolParameters),
 	components: many(protocolComponents),
+	investigation: one(investigations, {
+		fields: [protocols.investigation],
+		references: [investigations.id],
+	}),
 }));
 
 export const protocolComponentsRelations = relations(

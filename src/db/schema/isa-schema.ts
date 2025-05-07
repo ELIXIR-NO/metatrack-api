@@ -272,6 +272,7 @@ export const protocols = pgTable("protocol", {
 	description: text(),
 	uri: text(),
 	version: text(),
+	investigation: uuid(),
 });
 
 export const protocolComponents = pgTable("protocol_component", {
