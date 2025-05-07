@@ -341,6 +341,10 @@ export const publicationRelations = relations(publications, ({ one }) => ({
 		fields: [publications.status],
 		references: [ontologyAnnotations.id],
 	}),
+	investigation: one(investigations, {
+		fields: [publications.investigation],
+		references: [investigations.id],
+	}),
 }));
 
 export const sampleRelations = relations(samples, ({ many }) => ({

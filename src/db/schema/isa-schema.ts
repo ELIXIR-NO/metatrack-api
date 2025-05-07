@@ -292,6 +292,7 @@ export const publications = pgTable("publication", {
 	authorList: text(),
 	title: text(),
 	status: uuid(),
+	investigation: uuid(),
 });
 
 export const samples = pgTable("sample", {
