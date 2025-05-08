@@ -357,6 +357,10 @@ export const sampleRelations = relations(samples, ({ one, many }) => ({
 	}),
 }));
 
-export const sourceRelations = relations(sources, ({ many }) => ({
+export const sourceRelations = relations(sources, ({ one, many }) => ({
 	characteristics: many(materialAttributeValues),
+	investigation: one(investigations, {
+		fields: [sources.investigation],
+		references: [investigations.id],
+	}),
 }));

@@ -308,4 +308,5 @@ export const sources = pgTable("source", {
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
 	name: text(),
+	investigation: uuid(),
 });
