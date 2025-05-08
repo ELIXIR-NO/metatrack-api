@@ -300,6 +300,7 @@ export const samples = pgTable("sample", {
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
 	name: text(),
+	investigation: uuid(),
 });
 
 export const sources = pgTable("source", {
