@@ -1,0 +1,41 @@
+name: Deploy Metatrack API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Build Binary
+        run: |
+          bun install
+          bun build \
+            --compile \
+            --minify-whitespace \
+            --target bun \
+            --outfile metatrack-server \
+            ./src/index.ts
+
+      - name: Copy binary to server
+        run: |
+          scp -o StrictHostKeyChecking=no ./metatrack-server ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/metatrack-api/metatrack-server
+
+      - name: Restart server with PM2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            cd /var/www/metatrack-api
+            pm2 restart bun-api --update-env --interpreter none -- ./metatrack-server
+          EOF
+          
