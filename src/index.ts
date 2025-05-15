@@ -23,7 +23,13 @@ const app = new Elysia()
 	.use(handlers)
 	.use(betterAuth)
 	.all("/api/auth/*", betterAuthView)
-	.get("/", () => "Hello Elysia")
+	.get("/", () => {
+		return {
+			greetings: "This is the API for metatrack",
+			auth_api: "https://api.metatrack.no/api/auth/reference",
+			app_api: "https://api.metatrack.no/api/app/reference",
+		};
+	})
 	.listen(3000);
 
 console.log(
