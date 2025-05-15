@@ -36,12 +36,13 @@ jobs:
 
       - name: Copy binary to server
         run: |
-          scp -o StrictHostKeyChecking=no ./metatrack-server ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/metatrack-api/metatrack-server
+          scp -o StrictHostKeyChecking=no ./metatrack-server ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/metatrack-api/metatrack-server.new
 
       - name: Restart server with PM2
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
             cd /var/www/metatrack-api
-            pm2 restart ecosystem.config.js --update-env --interpreter none
+            mv metatrack-server.new metatrack-server
+            pm2 reload ecosystem.config.js --update-env --interpreter none
           EOF
           
