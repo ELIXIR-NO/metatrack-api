@@ -42,6 +42,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
             cd /var/www/metatrack-api
+            export PATH=$PATH:/home/debian/.bun/bin/
             mv metatrack-server.new metatrack-server
             pm2 reload ecosystem.config.js --update-env --interpreter none
           EOF
