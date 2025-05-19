@@ -40,12 +40,9 @@ export async function getAllFactors(investigationId: string) {
 	});
 }
 
-export async function getFactorById(investigationId: string, factorId: string) {
+export async function getFactorById(factorId: string) {
 	return await db.query.factors.findFirst({
-		where: and(
-			eq(factors.investigation, investigationId),
-			eq(factors.id, factorId),
-		),
+		where: eq(factors.id, factorId),
 	});
 }
 
