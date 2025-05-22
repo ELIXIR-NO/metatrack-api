@@ -1,6 +1,6 @@
 import Elysia from "elysia";
-import { auth } from "../utils/auth";
-import { canRead, canWrite } from "../lib/projectHelpers";
+import { auth } from "../../utils/auth";
+import { canRead, canWrite } from "../../lib/projectHelpers";
 import {
 	Assay,
 	createAssay,
@@ -8,7 +8,7 @@ import {
 	editAssay,
 	getAllAssays,
 	getAssayById,
-} from "../lib/assayHelpers";
+} from "../../lib/assayHelpers";
 
 export const assayHandler = new Elysia({
 	prefix:

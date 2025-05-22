@@ -2,7 +2,7 @@ import Elysia from "elysia";
 import { projectsHandler } from "./projectHandler";
 import { invetigationsHandler } from "./investigationsHandler";
 import { studyHandler } from "./studyHandler";
-import { assayHandler } from "./assayHandler";
+import { assayHandlers } from "./assay";
 import { dataHandler } from "./dataHandler";
 import { factorHandlers } from "./factor";
 import { materialHandlers } from "./material";
@@ -18,7 +18,7 @@ export const handlers = new Elysia()
 	.use(projectsHandler)
 	.use(invetigationsHandler)
 	.use(studyHandler)
-	.use(assayHandler)
+	.use(assayHandlers)
 	.use(dataHandler)
 	.use(factorHandlers)
 	.use(materialHandlers)
