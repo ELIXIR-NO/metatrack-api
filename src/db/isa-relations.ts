@@ -93,7 +93,7 @@ export const assayRelations = relations(assays, ({ one, many }) => ({
 
 export const assayMaterialRelations = relations(assayMaterials, ({ many }) => ({
 	samples: many(samples),
-	materials: many(materials),
+	otherMaterials: many(materials),
 }));
 
 export const dataRelations = relations(data, ({ one }) => ({

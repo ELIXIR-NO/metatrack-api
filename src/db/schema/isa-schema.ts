@@ -63,6 +63,7 @@ export const assayMaterials = pgTable("assay_material", {
 	id: uuid().defaultRandom().primaryKey(),
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
+	assay: uuid().references(() => assays.id, { onDelete: "cascade" }),
 });
 
 export const dataTypeEnum = pgEnum("dataType", [
