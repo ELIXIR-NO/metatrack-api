@@ -65,7 +65,7 @@ export const studyRelations = relations(studies, ({ one, many }) => ({
 export const studyMaterialRelations = relations(studyMaterials, ({ many }) => ({
 	sources: many(sources),
 	samples: many(samples),
-	materials: many(materials),
+	outerMaterials: many(materials),
 }));
 
 export const assayRelations = relations(assays, ({ one, many }) => ({
