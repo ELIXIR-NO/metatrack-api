@@ -1,7 +1,6 @@
 import Elysia from "elysia";
 import { projectsHandler } from "./projectHandler";
 import { invetigationsHandler } from "./investigationsHandler";
-import { studyHandler } from "./studyHandler";
 import { assayHandlers } from "./assay";
 import { dataHandler } from "./dataHandler";
 import { factorHandlers } from "./factor";
@@ -13,11 +12,12 @@ import { protocolHandlers } from "./protocol";
 import { publicationHandler } from "./publicationHandler";
 import { sampleHandler } from "./sampleHandler";
 import { sourceHandler } from "./sourceHandler";
+import { studyHandlers } from "./study";
 
 export const handlers = new Elysia()
 	.use(projectsHandler)
 	.use(invetigationsHandler)
-	.use(studyHandler)
+	.use(studyHandlers)
 	.use(assayHandlers)
 	.use(dataHandler)
 	.use(factorHandlers)

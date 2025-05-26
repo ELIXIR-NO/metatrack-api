@@ -1,6 +1,6 @@
 import Elysia from "elysia";
-import { auth } from "../utils/auth";
-import { getUserRole } from "../lib/projectHelpers";
+import { auth } from "../../utils/auth";
+import { getUserRole } from "../../lib/projectHelpers";
 import {
 	CreateStudy,
 	createStudy,
@@ -8,7 +8,7 @@ import {
 	getAllStudies,
 	getStudyById,
 	updateStudy,
-} from "../lib/studyHelpers";
+} from "../../lib/studyHelpers";
 
 export const studyHandler = new Elysia({
 	prefix: "/projects/:projectId/investigations/:investigationId/studies",

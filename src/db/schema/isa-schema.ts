@@ -43,6 +43,7 @@ export const studyMaterials = pgTable("study_material", {
 	id: uuid().defaultRandom().primaryKey(),
 	createdAt: timestamp("created_at").notNull(),
 	updatedAt: timestamp("updated_at").notNull(),
+	study: uuid().references(() => studies.id, { onDelete: "cascade" }),
 });
 
 export const assays = pgTable("assay", {

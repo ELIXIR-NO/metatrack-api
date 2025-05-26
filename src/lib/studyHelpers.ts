@@ -3,12 +3,6 @@ import { db } from "../db";
 import { studies } from "../db/schema";
 import { Static, t } from "elysia";
 
-// TODO: Apporpriately handle this as well!
-const StudyMaterials = t.Object({
-	samples: t.Optional(t.String()),
-	otherMaterials: t.Optional(t.String()),
-});
-
 export const CreateStudy = t.Object({
 	filename: t.Optional(t.String()),
 	identifier: t.String(),
