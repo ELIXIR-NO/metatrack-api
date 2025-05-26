@@ -3,8 +3,6 @@ import { db } from "../db";
 import { assays } from "../db/schema";
 import { and, eq } from "drizzle-orm";
 
-// TODO: Deal with the assay_materials table as well!
-
 export const Assay = t.Object({
 	filename: t.Optional(t.String()),
 	measurementType: t.Optional(t.String()),
