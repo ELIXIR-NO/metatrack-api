@@ -26,13 +26,23 @@ export type TCreateStudy = Static<typeof CreateStudy>;
 export const EditStudy = t.Omit(CreateStudy, ["identifier"]);
 export type TEditStudy = Static<typeof EditStudy>;
 
+function cleanStudyDateData(data: TCreateStudy) {
+	return {
+		...data,
+		submissionDate: data.submissionDate === "" ? null : data.submissionDate,
+		publicReleaseDate:
+			data.publicReleaseDate === "" ? null : data.publicReleaseDate,
+	};
+}
+
 export async function createStudy(data: TCreateStudy, investigationId: string) {
 	const currentTime = new Date();
+	const cleanStudyData = cleanStudyDateData(data);
 
 	return await db
 		.insert(studies)
 		.values({
-			...data,
+			...cleanStudyData,
 			createdAt: currentTime,
 			updatedAt: currentTime,
 			investigation: investigationId,

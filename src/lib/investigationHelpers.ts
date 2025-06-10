@@ -32,15 +32,26 @@ export async function getInvestigationById(investigationId: string) {
 	});
 }
 
+function cleanInvestigationDateData(data: TInvestigation) {
+	return {
+		...data,
+		submissionDate: data.submissionDate === "" ? null : data.submissionDate,
+		publicReleaseDate:
+			data.publicReleaseDate === "" ? null : data.publicReleaseDate,
+	};
+}
+
 export async function saveInvestigation(
 	data: TInvestigation,
 	projectId: string,
 ) {
 	const currentTime = new Date();
+	const cleanedData = cleanInvestigationDateData(data);
+
 	return await db
 		.insert(investigations)
 		.values({
-			...data,
+			...cleanedData,
 			createdAt: currentTime,
 			updatedAt: currentTime,
 			project: projectId,
