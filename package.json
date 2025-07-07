@@ -11,7 +11,7 @@
 		"@elysiajs/cors": "^1.2.0",
 		"@elysiajs/swagger": "^1.2.2",
 		"better-auth": "^1.2.4",
-		"dotenv": "^16.4.7",
+		"dotenv": "^17.0.1",
 		"drizzle-orm": "^0.44.0",
 		"drizzle-typebox": "^0.3.0",
 		"elysia": "latest",
