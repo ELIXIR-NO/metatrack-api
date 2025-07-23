@@ -1,23 +1,19 @@
 package no.metatrack.api.node;
 
 import lombok.*;
-import no.metatrack.api.relations.InvestigationMember;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@Node("Investigation")
+@Node("Study")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Investigation {
+public class Study {
 
 	@Id
 	@GeneratedValue(UUIDStringGenerator.class)
@@ -31,11 +27,7 @@ public class Investigation {
 
 	private String filename;
 
-	@Builder.Default
-	@Relationship(type = "HAS_MEMBER", direction = Relationship.Direction.OUTGOING)
-	private Set<InvestigationMember> members = new HashSet<>();
-
-	@Relationship(type = "HAS_STUDY", direction = Relationship.Direction.OUTGOING)
-	private Set<Study> studies = new HashSet<>();
+	@Relationship(type = "HAS_STUDY", direction = Relationship.Direction.INCOMING)
+	private Investigation investigation;
 
 }
