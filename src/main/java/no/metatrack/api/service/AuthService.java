@@ -5,12 +5,10 @@ import no.metatrack.api.dto.CreateUserResponse;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.User;
 import no.metatrack.api.repository.UserRepository;
+import no.metatrack.api.utils.TextUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -32,7 +30,7 @@ public class AuthService {
 
 		String passwordHash = passwordEncoder.encode(request.password());
 		User newUser = User.builder()
-			.name(Optional.ofNullable(request.name()).filter(StringUtils::hasText).orElse(null))
+			.name(TextUtils.convertBlankStringToNull(request.name()))
 			.email(request.email())
 			.password(passwordEncoder.encode(request.password()))
 			.build();
