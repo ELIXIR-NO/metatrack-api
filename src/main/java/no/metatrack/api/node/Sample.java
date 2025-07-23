@@ -7,27 +7,27 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-@Node("Assay")
+@Node("Sample")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Assay {
+public class Sample {
 
 	@Id
 	@GeneratedValue(UUIDStringGenerator.class)
 	private String id;
 
-	private String filename;
+	private String name;
 
-	@Relationship(type = "HAS_ASSAY", direction = Relationship.Direction.INCOMING)
-	private Study study;
+	@Relationship(type = "IS_RAW_ATTRIBUTE", direction = Relationship.Direction.OUTGOING)
+	private List<SampleAttributes> rawAttributes = new ArrayList<>();
 
-	@Relationship(type = "HAS_SAMPLE", direction = Relationship.Direction.OUTGOING)
-	private Set<Sample> sample = new HashSet<>();
+	@Relationship(type = "HAS_SAMPLE", direction = Relationship.Direction.INCOMING)
+	private Assay assay;
 
 }
