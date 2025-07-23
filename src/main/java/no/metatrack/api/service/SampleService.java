@@ -10,6 +10,8 @@ import no.metatrack.api.repository.SampleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class SampleService {
 
@@ -36,7 +38,26 @@ public class SampleService {
 
 		Sample savedSample = sampleRepository.save(newSample);
 
-		return new SampleResponse(savedSample.getName(), savedSample.getRawAttributes());
+		return convertToSampleResponse(savedSample);
+	}
+
+	public SampleResponse getSampleById(String sampleId) {
+		Sample sample = sampleRepository.findById(sampleId).orElseThrow();
+		return convertToSampleResponse(sample);
+	}
+
+	public SampleResponse getSampleByName(String sampleName) {
+		Sample sample = sampleRepository.findByName(sampleName).orElseThrow();
+		return convertToSampleResponse(sample);
+	}
+
+	public List<SampleResponse> getAllSamples(String assayId) {
+		Assay assay = assayRepository.findById(assayId).orElseThrow();
+		return assay.getSample().stream().map(this::convertToSampleResponse).toList();
+	}
+
+	private SampleResponse convertToSampleResponse(Sample sample) {
+		return new SampleResponse(sample.getName(), sample.getRawAttributes());
 	}
 
 }

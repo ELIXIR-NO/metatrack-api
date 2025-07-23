@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/investigations/{investigationId}/studies/{studyId}/assays/{assayId}/samples")
@@ -33,6 +34,29 @@ public class SampleController {
 			.toUri();
 
 		return ResponseEntity.created(location).body(response);
+	}
+
+	@GetMapping("/id/{sampleId}")
+	public ResponseEntity<SampleResponse> getSampleById(@PathVariable String investigationId,
+			@PathVariable String studyId, @PathVariable String assayId, @PathVariable String sampleId) {
+		SampleResponse response = sampleService.getSampleById(sampleId);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/name/{sampleName}")
+	public ResponseEntity<SampleResponse> getSampleByName(@PathVariable String investigationId,
+			@PathVariable String studyId, @PathVariable String assayId, @PathVariable String sampleName) {
+		SampleResponse response = sampleService.getSampleByName(sampleName);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<SampleResponse>> getAllSamplesInAssay(@PathVariable String investigationId,
+			@PathVariable String studyId, @PathVariable String assayId) {
+
+		List<SampleResponse> response = sampleService.getAllSamples(assayId);
+
+		return ResponseEntity.ok(response);
 	}
 
 }
