@@ -1,7 +1,7 @@
 package no.metatrack.api.service;
 
 import no.metatrack.api.dto.CreateUserRequest;
-import no.metatrack.api.dto.CreateUserResponse;
+import no.metatrack.api.dto.UserResponse;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.User;
 import no.metatrack.api.repository.UserRepository;
@@ -23,7 +23,7 @@ public class AuthService {
 	}
 
 	@Transactional
-	public CreateUserResponse registerNewUser(CreateUserRequest request) {
+	public UserResponse registerNewUser(CreateUserRequest request) {
 		if (userRepository.existsByEmail(request.email())) {
 			throw new ResourceAlreadyExistsException("Email is already in use!");
 		}
@@ -36,7 +36,7 @@ public class AuthService {
 			.build();
 
 		User savedUser = userRepository.save(newUser);
-		return new CreateUserResponse(savedUser.getId());
+		return new UserResponse(savedUser.getId());
 	}
 
 	private boolean validatePassword(String rawPassword, String encodedPassword) {

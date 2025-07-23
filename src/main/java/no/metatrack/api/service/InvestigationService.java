@@ -1,7 +1,7 @@
 package no.metatrack.api.service;
 
 import no.metatrack.api.dto.CreateInvestigationRequest;
-import no.metatrack.api.dto.CreateInvestigationResponse;
+import no.metatrack.api.dto.InvestigationResponse;
 import no.metatrack.api.enums.InvestigationRole;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.Investigation;
@@ -27,7 +27,7 @@ public class InvestigationService {
 		this.userRepository = userRepository;
 	}
 
-	public CreateInvestigationResponse createInvestigation(CreateInvestigationRequest request, String userEmail) {
+	public InvestigationResponse createInvestigation(CreateInvestigationRequest request, String userEmail) {
 		if (investigationRepository.existsByIdentifier(request.identifier())) {
 			throw new ResourceAlreadyExistsException("Identifier is already in use!");
 		}
@@ -45,7 +45,7 @@ public class InvestigationService {
 
 		Investigation savedInvestigation = investigationRepository.save(newInvestigation);
 
-		return new CreateInvestigationResponse(savedInvestigation.getId(), savedInvestigation.getIdentifier(),
+		return new InvestigationResponse(savedInvestigation.getId(), savedInvestigation.getIdentifier(),
 				savedInvestigation.getTitle(), savedInvestigation.getDescription(), savedInvestigation.getFilename());
 
 	}

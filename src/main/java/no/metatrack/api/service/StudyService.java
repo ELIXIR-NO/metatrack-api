@@ -2,7 +2,7 @@ package no.metatrack.api.service;
 
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateStudyRequest;
-import no.metatrack.api.dto.CreateStudyResponse;
+import no.metatrack.api.dto.StudyResponse;
 import no.metatrack.api.node.Investigation;
 import no.metatrack.api.node.Study;
 import no.metatrack.api.repository.InvestigationRepository;
@@ -24,7 +24,7 @@ public class StudyService {
 	}
 
 	@Transactional
-	public CreateStudyResponse createNewStudy(@Valid CreateStudyRequest request, String investigationId) {
+	public StudyResponse createNewStudy(@Valid CreateStudyRequest request, String investigationId) {
 		Investigation investigation = investigationRepository.findById(investigationId).orElseThrow();
 
 		Study newStudy = Study.builder()
@@ -37,7 +37,7 @@ public class StudyService {
 
 		Study savedStudy = studyRepository.save(newStudy);
 
-		return new CreateStudyResponse(savedStudy.getId(), savedStudy.getIdentifier(), savedStudy.getTitle(),
+		return new StudyResponse(savedStudy.getId(), savedStudy.getIdentifier(), savedStudy.getTitle(),
 				savedStudy.getDescription(), savedStudy.getFilename());
 	}
 

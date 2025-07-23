@@ -2,7 +2,7 @@ package no.metatrack.api.controller;
 
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateUserRequest;
-import no.metatrack.api.dto.CreateUserResponse;
+import no.metatrack.api.dto.UserResponse;
 import no.metatrack.api.service.AuthService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class AuthController {
 	}
 
 	@PostMapping(path = "/register")
-	public ResponseEntity<CreateUserResponse> register(@Valid @RequestBody CreateUserRequest request) {
-		CreateUserResponse response = authService.registerNewUser(request);
+	public ResponseEntity<UserResponse> register(@Valid @RequestBody CreateUserRequest request) {
+		UserResponse response = authService.registerNewUser(request);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/api/v1/users/{id}")

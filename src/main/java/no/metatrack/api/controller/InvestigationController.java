@@ -2,7 +2,7 @@ package no.metatrack.api.controller;
 
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateInvestigationRequest;
-import no.metatrack.api.dto.CreateInvestigationResponse;
+import no.metatrack.api.dto.InvestigationResponse;
 import no.metatrack.api.service.InvestigationService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +26,13 @@ public class InvestigationController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CreateInvestigationResponse> createInvestigation(
+	public ResponseEntity<InvestigationResponse> createInvestigation(
 			@Valid @RequestBody CreateInvestigationRequest request) {
 
 		// NB! Replace it with the actual logged-in user's email
 		var userEmail = "john.doe@example.com";
 
-		CreateInvestigationResponse response = investigationService.createInvestigation(request, userEmail);
+		InvestigationResponse response = investigationService.createInvestigation(request, userEmail);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/api/v1/investigations/{id}")
