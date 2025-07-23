@@ -7,33 +7,21 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@Node("Study")
+@Node("Assay")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Study {
+public class Assay {
 
 	@Id
 	@GeneratedValue(UUIDStringGenerator.class)
 	private String id;
 
-	private String identifier;
-
-	private String title;
-
-	private String description;
-
 	private String filename;
 
-	@Relationship(type = "HAS_STUDY", direction = Relationship.Direction.INCOMING)
-	private Investigation investigation;
-
-	@Relationship(type = "HAS_ASSAY", direction = Relationship.Direction.OUTGOING)
-	private Set<Assay> assays = new HashSet<>();
+	@Relationship(type = "HAS_ASSAY", direction = Relationship.Direction.INCOMING)
+	private Study study;
 
 }
