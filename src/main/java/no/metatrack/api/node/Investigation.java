@@ -38,4 +38,7 @@ public class Investigation {
 	@Relationship(type = "HAS_STUDY", direction = Relationship.Direction.OUTGOING)
 	private Set<Study> studies = new HashSet<>();
 
+	@Relationship(type = "HAS_ONTOLOGY", direction = Relationship.Direction.OUTGOING)
+	private Set<OntologySourceReference> ontologies = new HashSet<>();
+
 }
