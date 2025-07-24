@@ -1,6 +1,6 @@
 package no.metatrack.api.service;
 
-import jakarta.validation.Valid;
+import no.metatrack.api.dto.CreateOntologyAnnotationRequest;
 import no.metatrack.api.dto.OntologyAnnotationResponse;
 import no.metatrack.api.node.OntologyAnnotation;
 import no.metatrack.api.node.OntologySourceReference;
@@ -21,7 +21,7 @@ public class OntologyAnnotationService {
 		this.ontologyAnnotationRepository = ontologyAnnotationRepository;
 	}
 
-	public OntologyAnnotationResponse createNewAnnotation(String sourceId, @Valid OntologyAnnotationResponse request) {
+	public OntologyAnnotationResponse createNewAnnotation(String sourceId, CreateOntologyAnnotationRequest request) {
 		OntologySourceReference sourceReference = ontologySourceReferenceRepository.findById(sourceId).orElseThrow();
 
 		OntologyAnnotation annotation = OntologyAnnotation.builder()

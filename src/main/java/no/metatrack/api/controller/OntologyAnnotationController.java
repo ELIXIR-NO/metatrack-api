@@ -1,6 +1,7 @@
 package no.metatrack.api.controller;
 
 import jakarta.validation.Valid;
+import no.metatrack.api.dto.CreateOntologyAnnotationRequest;
 import no.metatrack.api.dto.OntologyAnnotationResponse;
 import no.metatrack.api.service.OntologyAnnotationService;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class OntologyAnnotationController {
 
 	@PostMapping
 	public ResponseEntity<OntologyAnnotationResponse> createOntologyAnnotation(@PathVariable String investigationId,
-			@PathVariable String sourceId, @Valid @RequestBody OntologyAnnotationResponse request) {
+			@PathVariable String sourceId, @Valid @RequestBody CreateOntologyAnnotationRequest request) {
 
 		OntologyAnnotationResponse response = ontologyAnnotationService.createNewAnnotation(sourceId, request);
 
