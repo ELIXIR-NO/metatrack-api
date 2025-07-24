@@ -10,13 +10,13 @@ import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-@Node("Sample")
+@Node
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Sample {
+public class Source {
 
 	@Id
 	@GeneratedValue(UUIDStringGenerator.class)
@@ -24,20 +24,7 @@ public class Sample {
 
 	private String name;
 
-	// To store arbitrary data from sample sheets
-	@Relationship(type = "IS_RAW_ATTRIBUTE", direction = Relationship.Direction.OUTGOING)
-	private List<SampleAttributes> rawAttributes = new ArrayList<>();
-
-	@Relationship(type = "HAS_SAMPLE", direction = Relationship.Direction.INCOMING)
-	private Assay assay;
-
 	@Relationship(type = "HAS_CHARACTERISTIC", direction = Relationship.Direction.OUTGOING)
 	private List<MaterialAttributeValue> characteristics = new ArrayList<>();
-
-	@Relationship(type = "HAS_FACTOR_VALUE", direction = Relationship.Direction.OUTGOING)
-	private List<FactorValues> factorsValues = new ArrayList<>();
-
-	@Relationship(type = "DERIVES_FROM", direction = Relationship.Direction.OUTGOING)
-	private List<Source> derivedFrom = new ArrayList<>();
 
 }
