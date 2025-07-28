@@ -6,3 +6,9 @@ spring:
     authentication:
       username: neo4j
       password: password
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minio
+  secret-key: password
+  bucket: uploads
