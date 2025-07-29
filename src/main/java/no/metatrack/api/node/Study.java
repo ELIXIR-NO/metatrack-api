@@ -36,4 +36,13 @@ public class Study {
 	@Relationship(type = "HAS_ASSAY", direction = Relationship.Direction.OUTGOING)
 	private Set<Assay> assays = new HashSet<>();
 
+	@Relationship(type = "HAS_FACTOR", direction = Relationship.Direction.OUTGOING)
+	private Set<Factor> factors = new HashSet<>();
+
+	@Relationship(type = "HAS_CHARACTERISTIC", direction = Relationship.Direction.OUTGOING)
+	private Set<MaterialAttribute> characteristicCategories = new HashSet<>();
+
+	@Relationship(type = "HAS_UNIT", direction = Relationship.Direction.OUTGOING)
+	private Set<OntologyAnnotation> unitCategories = new HashSet<>();
+
 }
