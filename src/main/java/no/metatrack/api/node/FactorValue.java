@@ -14,7 +14,7 @@ import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FactorValues {
+public class FactorValue {
 
 	@Id
 	@GeneratedValue(UUIDStringGenerator.class)

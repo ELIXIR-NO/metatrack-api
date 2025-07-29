@@ -6,6 +6,7 @@ import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import no.metatrack.api.dto.CreateSampleRequest;
 import no.metatrack.api.dto.SampleResponse;
+import no.metatrack.api.enums.SampleAttributeType;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.Assay;
 import no.metatrack.api.node.Sample;
@@ -41,10 +42,11 @@ public class SampleService {
 	private final MinioClient minioClient;
 
 	private final String bucket;
+
 	private final SampleAttributeRepository sampleAttributeRepository;
 
 	public SampleService(AssayRepository assayRepository, SampleRepository sampleRepository, MinioClient minioClient,
-						 @Value("${minio.bucket}") String bucket, SampleAttributeRepository sampleAttributeRepository) {
+			@Value("${minio.bucket}") String bucket, SampleAttributeRepository sampleAttributeRepository) {
 		this.assayRepository = assayRepository;
 		this.sampleRepository = sampleRepository;
 		this.minioClient = minioClient;

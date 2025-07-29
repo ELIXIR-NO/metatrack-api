@@ -35,7 +35,7 @@ public class Sample {
 	private List<MaterialAttributeValue> characteristics = new ArrayList<>();
 
 	@Relationship(type = "HAS_FACTOR_VALUE", direction = Relationship.Direction.OUTGOING)
-	private List<FactorValues> factorsValues = new ArrayList<>();
+	private List<FactorValue> factorsValues = new ArrayList<>();
 
 	@Relationship(type = "DERIVES_FROM", direction = Relationship.Direction.OUTGOING)
 	private List<Source> derivedFrom = new ArrayList<>();
