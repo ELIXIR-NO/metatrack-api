@@ -9,8 +9,9 @@ import no.metatrack.api.dto.SampleResponse;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.Assay;
 import no.metatrack.api.node.Sample;
-import no.metatrack.api.node.SampleAttributes;
+import no.metatrack.api.node.SampleAttribute;
 import no.metatrack.api.repository.AssayRepository;
+import no.metatrack.api.repository.SampleAttributeRepository;
 import no.metatrack.api.repository.SampleRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -40,13 +41,15 @@ public class SampleService {
 	private final MinioClient minioClient;
 
 	private final String bucket;
+	private final SampleAttributeRepository sampleAttributeRepository;
 
 	public SampleService(AssayRepository assayRepository, SampleRepository sampleRepository, MinioClient minioClient,
-			@Value("${minio.bucket}") String bucket) {
+						 @Value("${minio.bucket}") String bucket, SampleAttributeRepository sampleAttributeRepository) {
 		this.assayRepository = assayRepository;
 		this.sampleRepository = sampleRepository;
 		this.minioClient = minioClient;
 		this.bucket = bucket;
+		this.sampleAttributeRepository = sampleAttributeRepository;
 	}
 
 	@Transactional
@@ -114,7 +117,7 @@ public class SampleService {
 			Assay assay = assayRepository.findById(assayId).orElseThrow();
 
 			for (CSVRecord record : records) {
-				List<SampleAttributes> rawAttributes = new ArrayList<>();
+				List<SampleAttribute> rawAttributes = new ArrayList<>();
 
 				for (String columnName : parser.getHeaderNames()) {
 					String value = null;
@@ -128,7 +131,7 @@ public class SampleService {
 					}
 
 					if (value != null && !value.isBlank()) {
-						SampleAttributes attribute = SampleAttributes.builder().name(columnName).value(value).build();
+						SampleAttribute attribute = SampleAttribute.builder().name(columnName).value(value).build();
 						rawAttributes.add(attribute);
 					}
 				}

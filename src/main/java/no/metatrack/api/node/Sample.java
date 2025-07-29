@@ -26,7 +26,7 @@ public class Sample {
 
 	// To store arbitrary data from sample sheets
 	@Relationship(type = "IS_RAW_ATTRIBUTE", direction = Relationship.Direction.OUTGOING)
-	private List<SampleAttributes> rawAttributes = new ArrayList<>();
+	private List<SampleAttribute> rawAttributes = new ArrayList<>();
 
 	@Relationship(type = "HAS_SAMPLE", direction = Relationship.Direction.INCOMING)
 	private Assay assay;

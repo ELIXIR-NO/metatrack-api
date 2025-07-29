@@ -12,7 +12,7 @@ import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SampleAttributes {
+public class SampleAttribute {
 
 	@Id
 	@GeneratedValue(UUIDStringGenerator.class)
