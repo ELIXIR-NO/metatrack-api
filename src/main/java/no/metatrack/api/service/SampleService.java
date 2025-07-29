@@ -6,14 +6,9 @@ import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import no.metatrack.api.dto.CreateSampleRequest;
 import no.metatrack.api.dto.SampleResponse;
-import no.metatrack.api.enums.SampleAttributeType;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
-import no.metatrack.api.node.Assay;
-import no.metatrack.api.node.Sample;
-import no.metatrack.api.node.SampleAttribute;
-import no.metatrack.api.repository.AssayRepository;
-import no.metatrack.api.repository.SampleAttributeRepository;
-import no.metatrack.api.repository.SampleRepository;
+import no.metatrack.api.node.*;
+import no.metatrack.api.repository.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -45,13 +40,21 @@ public class SampleService {
 
 	private final SampleAttributeRepository sampleAttributeRepository;
 
+	private final FactorValueRepository factorValueRepository;
+
+	private final MaterialAttributeValueRepository materialAttributeValueRepository;
+
 	public SampleService(AssayRepository assayRepository, SampleRepository sampleRepository, MinioClient minioClient,
-			@Value("${minio.bucket}") String bucket, SampleAttributeRepository sampleAttributeRepository) {
+			@Value("${minio.bucket}") String bucket, SampleAttributeRepository sampleAttributeRepository,
+			FactorValueRepository factorValueRepository,
+			MaterialAttributeValueRepository materialAttributeValueRepository) {
 		this.assayRepository = assayRepository;
 		this.sampleRepository = sampleRepository;
 		this.minioClient = minioClient;
 		this.bucket = bucket;
 		this.sampleAttributeRepository = sampleAttributeRepository;
+		this.factorValueRepository = factorValueRepository;
+		this.materialAttributeValueRepository = materialAttributeValueRepository;
 	}
 
 	@Transactional
@@ -87,7 +90,8 @@ public class SampleService {
 	}
 
 	private SampleResponse convertToSampleResponse(Sample sample) {
-		return new SampleResponse(sample.getName(), sample.getRawAttributes());
+		return new SampleResponse(sample.getName(), sample.getRawAttributes(), sample.getCharacteristics(),
+				sample.getFactorValues(), sample.getDerivedFrom());
 	}
 
 	@Transactional
@@ -186,6 +190,53 @@ public class SampleService {
 			throw new RuntimeException(e);
 		}
 
+	}
+
+	@Transactional
+	public void curateRawAttribute(String sampleId, String rawAttributeId, Factor factor, OntologyAnnotation unit,
+			Object value) {
+		Sample sample = sampleRepository.findById(sampleId).orElseThrow();
+		SampleAttribute rawAttribute = sampleAttributeRepository.findById(rawAttributeId).orElseThrow();
+
+		FactorValue factorValue = new FactorValue();
+		factorValue.setCategory(factor);
+		factorValue.setUnit(unit);
+		factorValue.setValue(value);
+
+		FactorValue savedFactorValue = factorValueRepository.save(factorValue);
+		List<FactorValue> sampleFactorValues = sample.getFactorValues();
+		sampleFactorValues.add(savedFactorValue);
+
+		sample.setFactorValues(sampleFactorValues);
+		sample.getRawAttributes().remove(rawAttribute);
+
+		sampleAttributeRepository.delete(rawAttribute);
+
+		Sample savedSample = sampleRepository.save(sample);
+	}
+
+	@Transactional
+	public void curateRawAttribute(String sampleId, String rawAttributeId, MaterialAttribute materialAttribute,
+			OntologyAnnotation unit, Object value) {
+		Sample sample = sampleRepository.findById(sampleId).orElseThrow();
+		SampleAttribute rawAttribute = sampleAttributeRepository.findById(rawAttributeId).orElseThrow();
+
+		MaterialAttributeValue materialAttributeValue = new MaterialAttributeValue();
+		materialAttributeValue.setCategory(materialAttribute);
+		materialAttributeValue.setUnit(unit);
+		materialAttributeValue.setValue(value);
+
+		MaterialAttributeValue savedMaterialAttributeValue = materialAttributeValueRepository
+			.save(materialAttributeValue);
+		List<MaterialAttributeValue> characteristics = sample.getCharacteristics();
+		characteristics.add(savedMaterialAttributeValue);
+
+		sample.setCharacteristics(characteristics);
+		sample.getRawAttributes().remove(rawAttribute);
+
+		sampleAttributeRepository.delete(rawAttribute);
+
+		Sample savedSample = sampleRepository.save(sample);
 	}
 
 }

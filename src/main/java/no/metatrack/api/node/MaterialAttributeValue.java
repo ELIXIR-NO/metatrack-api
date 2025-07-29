@@ -1,7 +1,8 @@
 package no.metatrack.api.node;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -9,20 +10,21 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
 @Node("MaterialAttributeValue")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MaterialAttributeValue {
 
 	@Id
+	@Getter
+	@Setter
 	@GeneratedValue(UUIDStringGenerator.class)
 	private String id;
 
+	@Setter
+	@Getter
 	@Relationship(type = "IS_CATEGORY", direction = Relationship.Direction.OUTGOING)
 	private MaterialAttribute category;
 
+	@Setter
+	@Getter
 	@Relationship(type = "HAS_UNIT", direction = Relationship.Direction.OUTGOING)
 	private OntologyAnnotation unit;
 
