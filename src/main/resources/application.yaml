@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: metatrack-api
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: password
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minio
+  secret-key: password
+  bucket: uploads
