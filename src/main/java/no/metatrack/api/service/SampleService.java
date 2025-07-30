@@ -239,4 +239,9 @@ public class SampleService {
 		Sample savedSample = sampleRepository.save(sample);
 	}
 
+	public void deleteSampleById(String sampleId) {
+		sampleRepository.findById(sampleId).orElseThrow();
+		sampleRepository.deleteByAndChildNodesBySampleId(sampleId);
+	}
+
 }
