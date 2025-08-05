@@ -75,4 +75,4 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ELIXIR Norway - [https://elixir.no/](https://elixir.no/)
 
-Project Link: [https://github.com/your-organization/metatrack-api](https://github.com/your-organization/metatrack-api)
+Project Link: [https://github.com/ELIXIR-NO/metatrack-api](https://github.com/ELIXIR-NO/metatrack-api)
