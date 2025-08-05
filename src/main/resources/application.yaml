@@ -1,6 +1,9 @@
 spring:
   application:
     name: metatrack-api
+  threads:
+    virtual:
+      enabled: true
   neo4j:
     uri: bolt://localhost:7687
     authentication:
