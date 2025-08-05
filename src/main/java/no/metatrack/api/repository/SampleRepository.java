@@ -21,6 +21,6 @@ public interface SampleRepository extends Neo4jRepository<Sample, String> {
 			DETACH DELETE child
 			DETACH DELETE s
 			""")
-	void deleteByAndChildNodesBySampleId(@Param("id") String sampleId);
+	void deleteSampleAndChildNodesBySampleId(@Param("id") String sampleId);
 
 }

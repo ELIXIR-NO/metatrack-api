@@ -241,7 +241,7 @@ public class SampleService {
 
 	public void deleteSampleById(String sampleId) {
 		sampleRepository.findById(sampleId).orElseThrow();
-		sampleRepository.deleteByAndChildNodesBySampleId(sampleId);
+		sampleRepository.deleteSampleAndChildNodesBySampleId(sampleId);
 	}
 
 }
