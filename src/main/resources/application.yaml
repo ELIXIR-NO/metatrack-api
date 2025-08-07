@@ -9,9 +9,20 @@ spring:
     authentication:
       username: neo4j
       password: password
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/auth/realms/metatrack
+          
 minio:
   endpoint: http://localhost:9000
   access-key: minio
   secret-key: password
   bucket: uploads
+
+keycloak:
+  auth-server-url: http://localhost:8090/auth
+  realm: metatrack
+  resource: metatrack-api
+  public-client: true
