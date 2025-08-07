@@ -24,6 +24,7 @@ focus on biological and biomedical research.
 - **Maven**: Dependency management and build tool
 - **MinIO**: Object storage for experimental data files
 - **Spring Security**: Authentication and authorization
+- **Keycloak**: Identity and access management solution
 
 ## Getting Started
 
@@ -33,6 +34,8 @@ focus on biological and biomedical research.
 - Maven 3.6 or higher
 - Neo4j 5 or higher
 - MinIO
+- Keycloak 22.0 or higher
+- PostgreSQL 17 or higher (for Keycloak)
 
 ### Installation
 
@@ -50,12 +53,23 @@ focus on biological and biomedical research.
    ./mvnw clean install
    ```
 
-4. Run the application:
+4. Start the infrastructure services:
+   ```bash
+   docker-compose up -d
+   ```
+
+5. Configure Keycloak (available at `http://localhost:8090`):
+    - Log in to the admin console using username `admin` and password `admin`
+    - Create a new realm for the application
+    - Configure client settings and user roles
+
+6. Run the application:
    ```bash
    ./mvnw spring-boot:run
    ```
 
 The API will be available at `http://localhost:8080/api/v1/`.
+Keycloak administration console will be available at `http://localhost:8090`.
 
 ## Contributing
 
