@@ -18,7 +18,7 @@ public class SampleAttribute {
 	@GeneratedValue(UUIDStringGenerator.class)
 	private String id;
 
-	// column name
+	// column username
 	@NonNull
 	private String name;
 
