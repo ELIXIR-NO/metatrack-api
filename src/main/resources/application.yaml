@@ -11,18 +11,32 @@ spring:
       password: password
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8090/auth/realms/metatrack
-          
+      client:
+        registration:
+          keycloak:
+            client-id: metatrack_api
+            client-secret: x5u6y6hEDQiO8i2t7Xc3j6FKs6dWBcgL
+            authorization-grant-type: password
+            scope: openid, profile, email
+            redirect-uri: "http://localhost:8080/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8090/realms/metatrack
+            token-uri: http://localhost:8090/realms/metatrack/protocol/openid-connect/token
+
 minio:
   endpoint: http://localhost:9000
   access-key: minio
   secret-key: password
   bucket: uploads
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+
 keycloak:
-  auth-server-url: http://localhost:8090/auth
   realm: metatrack
-  resource: metatrack-api
-  public-client: true
+  url: http://localhost:8090
+  admin-username: admin
+  admin-password: admin
