@@ -10,15 +10,10 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM fedora:latest
+FROM eclipse-temurin:24-jre
 
 LABEL maintainer="Joshua Baskaran <joshua.baskaran@uit.no>"
 LABEL description="Metatrack API"
-
-RUN dnf update -y && \
-    dnf install -y java-24-openjdk-headless && \
-    dnf clean all && \
-    rm -rf /var/cache/dnf/*
 
 RUN groupadd -r spring && useradd -r -g spring spring
 USER spring
