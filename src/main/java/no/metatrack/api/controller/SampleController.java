@@ -63,7 +63,7 @@ public class SampleController {
 	public ResponseEntity<Void> deleteSample(@PathVariable String investigationId, @PathVariable String studyId,
 			@PathVariable String assayId, @PathVariable String sampleId) {
 		sampleService.deleteSampleById(sampleId);
-		
+
 		return ResponseEntity.noContent().build();
 	}
 

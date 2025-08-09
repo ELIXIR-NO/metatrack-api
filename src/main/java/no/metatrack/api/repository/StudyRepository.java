@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudyRepository extends Neo4jRepository<Study, String> {
-    
+
 }
