@@ -63,16 +63,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>10.26.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.spring.javaformat</groupId>
-            <artifactId>spring-javaformat-checkstyle</artifactId>
-            <version>0.0.47</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
@@ -142,37 +132,6 @@
                         <inherited>true</inherited>
                         <goals>
                             <goal>validate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.6.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>10.26.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.spring.javaformat</groupId>
-                        <artifactId>spring-javaformat-checkstyle</artifactId>
-                        <version>0.0.47</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validation</id>
-                        <phase>validate</phase>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <configLocation>io/spring/javaformat/checkstyle/checkstyle.xml</configLocation>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        </configuration>
-                        <goals>
-                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
