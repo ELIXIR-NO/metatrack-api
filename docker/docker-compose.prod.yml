@@ -1,8 +1,6 @@
 services:
   springboot-app:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
+    image: ${IMAGE}:${IMAGE_TAG}
     container_name: springboot-app
     restart: unless-stopped
     environment:
@@ -17,6 +15,7 @@ services:
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI=https://${KEYCLOAK_HOSTNAME}/realms/${KEYCLOAK_REALM}
+      - JAVA_OPTS=${JAVA_OPTS}
     expose:
       - "8080"
     depends_on:

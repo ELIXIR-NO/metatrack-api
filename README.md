@@ -90,3 +90,25 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ELIXIR Norway - [https://elixir.no/](https://elixir.no/)
 
 Project Link: [https://github.com/ELIXIR-NO/metatrack-api](https://github.com/ELIXIR-NO/metatrack-api)
+
+## Deployment via GHCR and Compose
+
+This repository includes a GitHub Actions workflow that builds and publishes a container image to GitHub Container Registry (GHCR) on every push to `main` and on version tags (`v*`).
+
+- Image URL: `ghcr.io/<owner>/metatrack-api`
+- Tags: `latest` on `main`, the branch name, the Git tag (e.g., `v1.2.3`), and the commit SHA.
+
+Server (Podman) usage:
+1. Login to GHCR:
+   - Create a GitHub PAT with `read:packages` scope or use a PAT from a user with access.
+   - `podman login ghcr.io -u <github-username> -p <personal-access-token>`
+2. Prepare env:
+   - `cp docker/.env.example docker/.env`
+   - Edit `docker/.env` and set `IMAGE=ghcr.io/<owner>/metatrack-api` and choose an `IMAGE_TAG` (e.g., `main`, `latest`, or a release tag).
+   - Set all required secrets (passwords, Keycloak config, etc.).
+3. Deploy with compose:
+   - `cd docker`
+   - `podman-compose -f docker-compose.prod.yml pull`
+   - `podman-compose -f docker-compose.prod.yml up -d`
+
+You can use Docker as well: `docker compose -f docker/docker-compose.prod.yml up -d`.
