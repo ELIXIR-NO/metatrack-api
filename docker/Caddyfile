@@ -1,0 +1,24 @@
+# Caddy configuration for metatrack.no
+# Ensure DNS A/AAAA records point to this host for the domains below.
+
+# API - Spring Boot app
+api.metatrack.no {
+  encode zstd gzip
+  @health path /health /actuator/health
+  handle @health {
+    respond "ok" 200
+  }
+  reverse_proxy springboot-app:8080
+}
+
+# Keycloak (Auth)
+auth.metatrack.no {
+  encode zstd gzip
+  reverse_proxy keycloak:8080
+}
+
+# MinIO (Object Storage) - Consider access control if exposing publicly
+storage.metatrack.no {
+  encode zstd gzip
+  reverse_proxy minio:9000
+}
