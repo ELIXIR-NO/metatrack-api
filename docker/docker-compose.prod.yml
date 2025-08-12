@@ -127,9 +127,7 @@ services:
     image: keycloak/keycloak:26.3
     container_name: keycloak
     restart: unless-stopped
-    command: >
-      sh -c "kc.sh build &&
-                 kc.sh start --optimized"
+    command: [ "start", "--hostname-strict=false" ]
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
