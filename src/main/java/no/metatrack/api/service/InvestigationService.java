@@ -27,12 +27,12 @@ public class InvestigationService {
 		this.userRepository = userRepository;
 	}
 
-	public InvestigationResponse createInvestigation(CreateInvestigationRequest request, String userEmail) {
+	public InvestigationResponse createInvestigation(CreateInvestigationRequest request, String userId) {
 		if (investigationRepository.existsByIdentifier(request.identifier())) {
 			throw new ResourceAlreadyExistsException("Identifier is already in use!");
 		}
 
-		User user = userRepository.findByEmail(userEmail).orElseThrow();
+		User user = userRepository.findById(userId).orElseThrow();
 		InvestigationMember owner = InvestigationMember.builder().user(user).role(InvestigationRole.OWNER).build();
 
 		Investigation newInvestigation = Investigation.builder()
@@ -51,10 +51,10 @@ public class InvestigationService {
 	}
 
 	@Transactional
-	public void addMemberToInvestigation(String investigationId, String userEmail, InvestigationRole role) {
+	public void addMemberToInvestigation(String investigationId, String userId, InvestigationRole role) {
 		Investigation investigation = investigationRepository.findById(investigationId).orElseThrow();
 
-		User user = userRepository.findByEmail(userEmail).orElseThrow();
+		User user = userRepository.findById(userId).orElseThrow();
 
 		InvestigationMember member = InvestigationMember.builder().user(user).role(role).build();
 

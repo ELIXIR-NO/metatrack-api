@@ -3,11 +3,10 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateUserRequest;
 import no.metatrack.api.dto.LoginRequest;
+import no.metatrack.api.node.User;
+import no.metatrack.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -39,11 +39,14 @@ public class AuthController {
 
 	private final String adminPassword;
 
+	private final UserRepository userRepository;
+
 	public AuthController(RestTemplate restTemplate, @Value("${keycloak.url}") String keycloakUrl,
 			@Value("${keycloak.realm}") String keycloakRealm, @Value("${keycloak.admin-username}") String adminUsername,
 			@Value("${keycloak.admin-password}") String adminPassword,
 			@Value("${spring.security.oauth2.client.registration.keycloak.client-id}") String clientId,
-			@Value("${spring.security.oauth2.client.registration.keycloak.client-secret}") String clientSecret) {
+			@Value("${spring.security.oauth2.client.registration.keycloak.client-secret}") String clientSecret,
+			UserRepository userRepository) {
 		this.restTemplate = restTemplate;
 		this.keycloakUrl = keycloakUrl;
 		this.keycloakRealm = keycloakRealm;
@@ -51,6 +54,7 @@ public class AuthController {
 		this.clientSecret = clientSecret;
 		this.adminUsername = adminUsername;
 		this.adminPassword = adminPassword;
+		this.userRepository = userRepository;
 	}
 
 	@PostMapping("/register")
@@ -79,11 +83,21 @@ public class AuthController {
 		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(userRepresentation, headers);
 
 		try {
-			return restTemplate.postForEntity(url, entity, String.class);
+			ResponseEntity<String> keycloakResponse = restTemplate.postForEntity(url, entity, String.class);
+			if (keycloakResponse.getStatusCode().is2xxSuccessful()) {
+				String location = Objects.requireNonNull(keycloakResponse.getHeaders().getLocation()).toString();
+				String userId = location.substring(location.lastIndexOf("/") + 1);
+
+				User newUser = new User(userId);
+				userRepository.save(newUser);
+
+				return ResponseEntity.status(HttpStatus.CREATED).build();
+			}
 		}
 		catch (HttpClientErrorException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
 		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
 	private String getAdminToken() {
