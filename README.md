@@ -55,21 +55,38 @@ focus on biological and biomedical research.
 
 4. Start the infrastructure services:
    ```bash
-   docker-compose up -d
+   cd docker
+   docker compose up -d
+   # or
+   podman compose up -d
    ```
 
 5. Configure Keycloak (available at `http://localhost:8090`):
     - Log in to the admin console using username `admin` and password `admin`
     - Create a new realm for the application
-    - Configure client settings and user roles
+    - Create a client and configure it as follows:
+        - Client ID: `metatrack_api`
+        - Root URL: `http://localhost:8080`
+        - Home URL: `http://localhost:8080`
+        - Valid redirect URIs: `http://localhost:8080/*`
+        - Web origins: `http://localhost:8080`
+    - Enable `Client authentication` and `Standard flow`
 
-6. Run the application:
+6. Configure Minio
+    - Log in to the admin console using username `minio` and password ``
+    - Create a new bucket called `uploads`
+
+7. Run the application:
+    Configure the `application.yaml` file to set up the Keycloak `client-id` and `client-secret`.
+    Then run the application with:
    ```bash
    ./mvnw spring-boot:run
    ```
 
-The API will be available at `http://localhost:8080/api/v1/`.
-Keycloak administration console will be available at `http://localhost:8090`.
+- The API will be available at `http://localhost:8080/api/v1/`.
+- Keycloak administration console will be available at `http://localhost:8090`.
+- Minio will be available at `http://localhost:9000`.
+- Neo4j Browser will be available at `http://localhost:7474`.
 
 ## Contributing
 
