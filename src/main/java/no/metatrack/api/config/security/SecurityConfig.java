@@ -56,11 +56,10 @@ public class SecurityConfig {
 				.authenticated()
 				.anyRequest()
 				.authenticated())
-			.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
-				jwt.jwtAuthenticationConverter(keycloakJwtAuthConverter());
-			}).authenticationEntryPoint(((request, response, authException) -> {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			})))
+			.oauth2ResourceServer(
+					oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakJwtAuthConverter()))
+						.authenticationEntryPoint(
+								((_, response, _) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		return http.build();
