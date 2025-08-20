@@ -46,8 +46,7 @@ public class InvestigationService {
 
 		Investigation savedInvestigation = investigationRepository.save(newInvestigation);
 
-		return new InvestigationResponse(savedInvestigation.getId(), savedInvestigation.getIdentifier(),
-				savedInvestigation.getTitle(), savedInvestigation.getDescription(), savedInvestigation.getFilename());
+		return convertToInvestigationResponse(savedInvestigation);
 
 	}
 
