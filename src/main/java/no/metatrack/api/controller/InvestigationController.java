@@ -6,6 +6,8 @@ import no.metatrack.api.dto.InvestigationResponse;
 import no.metatrack.api.service.InvestigationService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +29,9 @@ public class InvestigationController {
 
 	@PostMapping
 	public ResponseEntity<InvestigationResponse> createInvestigation(
-			@Valid @RequestBody CreateInvestigationRequest request) {
+			@Valid @RequestBody CreateInvestigationRequest request, @AuthenticationPrincipal Jwt jwt) {
 
-		// NB! Replace it with the actual logged-in user's email
-		var userEmail = "john.doe@example.com";
-
-		InvestigationResponse response = investigationService.createInvestigation(request, userEmail);
+		InvestigationResponse response = investigationService.createInvestigation(request, jwt.getSubject());
 
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/api/v1/investigations/{id}")
