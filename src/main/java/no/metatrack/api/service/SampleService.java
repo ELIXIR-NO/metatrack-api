@@ -212,7 +212,7 @@ public class SampleService {
 
 		sampleAttributeRepository.delete(rawAttribute);
 
-		Sample savedSample = sampleRepository.save(sample);
+		sampleRepository.save(sample);
 	}
 
 	@Transactional
@@ -236,7 +236,7 @@ public class SampleService {
 
 		sampleAttributeRepository.delete(rawAttribute);
 
-		Sample savedSample = sampleRepository.save(sample);
+		sampleRepository.save(sample);
 	}
 
 	public void deleteSampleById(String sampleId) {
