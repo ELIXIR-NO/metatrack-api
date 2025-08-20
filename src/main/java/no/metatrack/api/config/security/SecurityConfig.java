@@ -56,11 +56,11 @@ public class SecurityConfig {
 				.authenticated()
 				.anyRequest()
 				.authenticated())
-			.oauth2ResourceServer(
-					oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakJwtAuthConverter()))
-						.authenticationEntryPoint(((request, response, authException) -> {
-							response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-						})))
+			.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
+				jwt.jwtAuthenticationConverter(keycloakJwtAuthConverter());
+			}).authenticationEntryPoint(((request, response, authException) -> {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			})))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		return http.build();
@@ -85,7 +85,7 @@ public class SecurityConfig {
 
 			var resourceAccess = jwt.getClaimAsMap("resource_access");
 			if (resourceAccess != null && resourceAccess.get("metatrack_api") instanceof java.util.Map<?, ?> client) {
-				var clientRoles = ((java.util.Map<?, ?>) client).get("roles");
+				var clientRoles = client.get("roles");
 				if (clientRoles instanceof Collection<?> cRoles) {
 					Set<SimpleGrantedAuthority> mappedClient = cRoles.stream()
 						.map(String::valueOf)
