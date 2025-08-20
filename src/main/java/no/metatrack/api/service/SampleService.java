@@ -106,90 +106,72 @@ public class SampleService {
 				.contentType(file.getContentType())
 				.build());
 
-			InputStream in = minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(objectName).build());
-			Reader reader = new InputStreamReader(in);
-			CSVParser parser = CSVFormat.DEFAULT.builder()
-				.setDelimiter('\t')
-				.setHeader()
-				.setSkipHeaderRecord(true)
-				.setAllowMissingColumnNames(true)
-				.setIgnoreEmptyLines(true)
-				.setTrim(true)
-				.get()
-				.parse(reader);
+			try (InputStream in = minioClient
+				.getObject(GetObjectArgs.builder().bucket(bucket).object(objectName).build());
+					Reader reader = new InputStreamReader(in);
+					CSVParser parser = CSVFormat.DEFAULT.builder()
+						.setDelimiter('\t')
+						.setHeader()
+						.setSkipHeaderRecord(true)
+						.setAllowMissingColumnNames(true)
+						.setIgnoreEmptyLines(true)
+						.setTrim(true)
+						.get()
+						.parse(reader)) {
 
-			List<CSVRecord> records = new ArrayList<>(parser.getRecords());
+				List<CSVRecord> records = new ArrayList<>(parser.getRecords());
 
-			Assay assay = assayRepository.findById(assayId).orElseThrow();
+				Assay assay = assayRepository.findById(assayId).orElseThrow();
 
-			for (CSVRecord record : records) {
-				List<SampleAttribute> rawAttributes = new ArrayList<>();
+				for (CSVRecord record : records) {
+					List<SampleAttribute> rawAttributes = new ArrayList<>();
 
-				for (String columnName : parser.getHeaderNames()) {
-					String value = null;
+					for (String columnName : parser.getHeaderNames()) {
+						String value = null;
+						try {
+							if (record.isMapped(columnName)) {
+								value = record.get(columnName);
+							}
+						}
+						catch (IllegalArgumentException e) {
+							continue;
+						}
+
+						if (value != null && !value.isBlank()) {
+							SampleAttribute attribute = SampleAttribute.builder().name(columnName).value(value).build();
+							rawAttributes.add(attribute);
+						}
+					}
+
+					String sampleName = null;
 					try {
-						if (record.isMapped(columnName)) {
-							value = record.get(columnName);
+						if (record.isMapped("sample_alias")) {
+							sampleName = record.get("sample_alias");
 						}
 					}
 					catch (IllegalArgumentException e) {
-						continue;
+						throw new RuntimeException("Required 'sample_alias' column not found in CSV");
+
 					}
 
-					if (value != null && !value.isBlank()) {
-						SampleAttribute attribute = SampleAttribute.builder().name(columnName).value(value).build();
-						rawAttributes.add(attribute);
+					if (sampleName != null && !sampleName.isBlank()) {
+						Sample sample = Sample.builder()
+							.name(sampleName)
+							.rawAttributes(rawAttributes)
+							.assay(assay)
+							.build();
+						samples.add(sample);
 					}
 				}
 
-				String sampleName = null;
-				try {
-					if (record.isMapped("sample_alias")) {
-						sampleName = record.get("sample_alias");
-					}
-				}
-				catch (IllegalArgumentException e) {
-					throw new RuntimeException("Required 'sample_alias' column not found in CSV");
-
-				}
-
-				if (sampleName != null && !sampleName.isBlank()) {
-					Sample sample = Sample.builder().name(sampleName).rawAttributes(rawAttributes).assay(assay).build();
-					samples.add(sample);
-				}
+				sampleRepository.saveAll(samples);
 			}
-
-			sampleRepository.saveAll(samples);
-
 		}
-		catch (ServerException e) {
+		catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
+				| NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
+				| InternalException e) {
 			throw new RuntimeException(e);
 		}
-		catch (InsufficientDataException e) {
-			throw new RuntimeException(e);
-		}
-		catch (ErrorResponseException e) {
-			throw new RuntimeException(e);
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		catch (InvalidKeyException e) {
-			throw new RuntimeException(e);
-		}
-		catch (InvalidResponseException e) {
-			throw new RuntimeException(e);
-		}
-		catch (XmlParserException e) {
-			throw new RuntimeException(e);
-		}
-		catch (InternalException e) {
-			throw new RuntimeException(e);
-		}
-
 	}
 
 	@Transactional

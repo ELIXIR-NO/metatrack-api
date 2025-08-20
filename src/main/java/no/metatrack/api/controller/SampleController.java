@@ -6,6 +6,7 @@ import no.metatrack.api.dto.SampleResponse;
 import no.metatrack.api.service.SampleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -65,6 +66,14 @@ public class SampleController {
 		sampleService.deleteSampleById(sampleId);
 
 		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/upload")
+	public ResponseEntity<Void> uploadSampleTable(@PathVariable String assayId,
+			@RequestParam("file") MultipartFile file, @PathVariable String investigationId,
+			@PathVariable String studyId) {
+		sampleService.uploadSampleTable(assayId, file);
+		return ResponseEntity.ok().build();
 	}
 
 }
