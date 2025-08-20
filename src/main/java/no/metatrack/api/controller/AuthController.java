@@ -3,6 +3,7 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateUserRequest;
 import no.metatrack.api.dto.LoginRequest;
+import no.metatrack.api.dto.LogoutRequest;
 import no.metatrack.api.service.AuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -83,7 +84,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<?> logoutUser(@RequestBody Map<String, String> request) {
+	public ResponseEntity<?> logoutUser(@Valid @RequestBody LogoutRequest request) {
 		String url = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/logout";
 
 		HttpHeaders headers = new HttpHeaders();
@@ -92,7 +93,7 @@ public class AuthController {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add("client_id", clientId);
 		map.add("client_secret", clientSecret);
-		map.add("refresh_token", request.get("refresh_token"));
+		map.add("refresh_token", request.refreshToken());
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
