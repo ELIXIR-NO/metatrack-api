@@ -29,7 +29,7 @@ public class UserController {
 	@GetMapping
 	public UserRepresentation getUserDetails(@AuthenticationPrincipal Jwt jwt) {
 		String userId = jwt.getSubject();
-        
+
 		Optional<UserRepresentation> userDetails = authService.getUserDetails(userId);
 
 		return userDetails.orElseThrow();
