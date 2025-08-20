@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateUserRequest;
 import no.metatrack.api.dto.LoginRequest;
 import no.metatrack.api.dto.LogoutRequest;
+import no.metatrack.api.dto.RefreshTokenRequest;
 import no.metatrack.api.service.AuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -91,6 +90,29 @@ public class AuthController {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("client_id", clientId);
+		map.add("client_secret", clientSecret);
+		map.add("refresh_token", request.refreshToken());
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+		try {
+			return restTemplate.postForEntity(url, entity, String.class);
+		}
+		catch (HttpClientErrorException e) {
+			return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+		}
+	}
+
+	@PostMapping("/refresh")
+	public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+		String url = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", "refresh_token");
 		map.add("client_id", clientId);
 		map.add("client_secret", clientSecret);
 		map.add("refresh_token", request.refreshToken());
