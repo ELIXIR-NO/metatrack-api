@@ -13,6 +13,7 @@ import no.metatrack.api.utils.TextUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -62,6 +63,16 @@ public class InvestigationService {
 
 		investigationMembers.add(member);
 		investigationRepository.save(investigation);
+	}
+
+	public List<InvestigationResponse> getAllInvestigations() {
+		List<Investigation> investigations = investigationRepository.findAll();
+		return investigations.stream().map(this::convertToInvestigationResponse).toList();
+	}
+
+	private InvestigationResponse convertToInvestigationResponse(Investigation investigation) {
+		return new InvestigationResponse(investigation.getId(), investigation.getIdentifier(), investigation.getTitle(),
+				investigation.getDescription(), investigation.getFilename());
 	}
 
 }
