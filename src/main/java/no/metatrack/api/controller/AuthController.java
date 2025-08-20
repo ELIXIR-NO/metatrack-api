@@ -3,11 +3,9 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateUserRequest;
 import no.metatrack.api.dto.LoginRequest;
+import no.metatrack.api.service.AuthService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,73 +31,31 @@ public class AuthController {
 
 	private final String clientSecret;
 
-	private final String adminUsername;
-
-	private final String adminPassword;
+	private final AuthService authService;
 
 	public AuthController(RestTemplate restTemplate, @Value("${keycloak.url}") String keycloakUrl,
-			@Value("${keycloak.realm}") String keycloakRealm, @Value("${keycloak.admin-username}") String adminUsername,
-			@Value("${keycloak.admin-password}") String adminPassword,
+			@Value("${keycloak.realm}") String keycloakRealm,
 			@Value("${spring.security.oauth2.client.registration.keycloak.client-id}") String clientId,
-			@Value("${spring.security.oauth2.client.registration.keycloak.client-secret}") String clientSecret) {
+			@Value("${spring.security.oauth2.client.registration.keycloak.client-secret}") String clientSecret,
+			AuthService authService) {
 		this.restTemplate = restTemplate;
 		this.keycloakUrl = keycloakUrl;
 		this.keycloakRealm = keycloakRealm;
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
-		this.adminUsername = adminUsername;
-		this.adminPassword = adminPassword;
+		this.authService = authService;
 	}
 
 	@PostMapping("/register")
 	public ResponseEntity<?> registerNewUser(@Valid @RequestBody CreateUserRequest request) {
-		String url = keycloakUrl + "/admin/realms/" + keycloakRealm + "/users";
-
-		String adminToken = getAdminToken();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setBearerAuth(adminToken);
-
-		Map<String, Object> userRepresentation = new HashMap<>();
-		userRepresentation.put("username", request.username());
-		userRepresentation.put("email", request.email());
-		userRepresentation.put("firstName", request.firstName());
-		userRepresentation.put("lastName", request.lastName());
-		userRepresentation.put("enabled", true);
-
-		Map<String, Object> credentials = new HashMap<>();
-		credentials.put("type", "password");
-		credentials.put("value", request.password());
-		credentials.put("temporary", false);
-		userRepresentation.put("credentials", List.of(credentials));
-
-		HttpEntity<Map<String, Object>> entity = new HttpEntity<>(userRepresentation, headers);
-
 		try {
-			return restTemplate.postForEntity(url, entity, String.class);
+			authService.registerNewUser(request.username(), request.email(), request.firstName(), request.lastName(),
+					request.password());
+			return ResponseEntity.status(HttpStatus.CREATED).build();
 		}
 		catch (HttpClientErrorException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
 		}
-	}
-
-	private String getAdminToken() {
-		String url = keycloakUrl + "/realms/master/protocol/openid-connect/token";
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("grant_type", "password");
-		map.add("client_id", "admin-cli");
-		map.add("username", adminUsername);
-		map.add("password", adminPassword);
-
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-		ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
-		return (String) response.getBody().get("access_token");
-
 	}
 
 	@PostMapping("/login")

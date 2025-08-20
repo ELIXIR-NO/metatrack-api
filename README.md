@@ -70,15 +70,16 @@ focus on biological and biomedical research.
         - Home URL: `http://localhost:8080`
         - Valid redirect URIs: `http://localhost:8080/*`
         - Web origins: `http://localhost:8080`
-    - Enable `Client authentication` and `Standard flow`
+    - Enable `Client authentication`, `Standard flow` and `service account roles`
+    - Add realm and client management roles to the service account
 
 6. Configure Minio
     - Log in to the admin console using username `minio` and password ``
     - Create a new bucket called `uploads`
 
 7. Run the application:
-    Configure the `application.yaml` file to set up the Keycloak `client-id` and `client-secret`.
-    Then run the application with:
+   Configure the `application.yaml` file to set up the Keycloak `client-id` and `client-secret`.
+   Then run the application with:
    ```bash
    ./mvnw spring-boot:run
    ```
@@ -110,22 +111,25 @@ Project Link: [https://github.com/ELIXIR-NO/metatrack-api](https://github.com/EL
 
 ## Deployment via GHCR and Compose
 
-This repository includes a GitHub Actions workflow that builds and publishes a container image to GitHub Container Registry (GHCR) on every push to `main` and on version tags (`v*`).
+This repository includes a GitHub Actions workflow that builds and publishes a container image to GitHub Container
+Registry (GHCR) on every push to `main` and on version tags (`v*`).
 
 - Image URL: `ghcr.io/<owner>/metatrack-api`
 - Tags: `latest` on `main`, the branch name, the Git tag (e.g., `v1.2.3`), and the commit SHA.
 
 Server (Podman) usage:
+
 1. Login to GHCR:
-   - Create a GitHub PAT with `read:packages` scope or use a PAT from a user with access.
-   - `podman login ghcr.io -u <github-username> -p <personal-access-token>`
+    - Create a GitHub PAT with `read:packages` scope or use a PAT from a user with access.
+    - `podman login ghcr.io -u <github-username> -p <personal-access-token>`
 2. Prepare env:
-   - `cp docker/.env.example docker/.env`
-   - Edit `docker/.env` and set `IMAGE=ghcr.io/<owner>/metatrack-api` and choose an `IMAGE_TAG` (e.g., `main`, `latest`, or a release tag).
-   - Set all required secrets (passwords, Keycloak config, etc.).
+    - `cp docker/.env.example docker/.env`
+    - Edit `docker/.env` and set `IMAGE=ghcr.io/<owner>/metatrack-api` and choose an `IMAGE_TAG` (e.g., `main`,
+      `latest`, or a release tag).
+    - Set all required secrets (passwords, Keycloak config, etc.).
 3. Deploy with compose:
-   - `cd docker`
-   - `podman-compose -f docker-compose.prod.yml pull`
-   - `podman-compose -f docker-compose.prod.yml up -d`
+    - `cd docker`
+    - `podman-compose -f docker-compose.prod.yml pull`
+    - `podman-compose -f docker-compose.prod.yml up -d`
 
 You can use Docker as well: `docker compose -f docker/docker-compose.prod.yml up -d`.
