@@ -74,4 +74,9 @@ public class InvestigationService {
 				investigation.getDescription(), investigation.getFilename());
 	}
 
+	public InvestigationResponse getInvestigationById(String investigationId) {
+		Investigation investigation = investigationRepository.findById(investigationId).orElseThrow();
+		return convertToInvestigationResponse(investigation);
+	}
+
 }

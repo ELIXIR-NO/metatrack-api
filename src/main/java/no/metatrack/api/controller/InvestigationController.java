@@ -43,4 +43,10 @@ public class InvestigationController {
 		return ResponseEntity.ok(response);
 	}
 
+	@GetMapping("/id/{investigationId}")
+	public ResponseEntity<InvestigationResponse> getInvestigationById(@PathVariable String investigationId) {
+		InvestigationResponse investigation = investigationService.getInvestigationById(investigationId);
+		return ResponseEntity.ok(investigation);
+	}
+
 }
