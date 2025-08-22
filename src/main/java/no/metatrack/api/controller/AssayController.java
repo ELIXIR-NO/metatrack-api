@@ -3,6 +3,7 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.AssayResponse;
 import no.metatrack.api.dto.CreateAssayRequest;
+import no.metatrack.api.dto.UpdateAssayRequest;
 import no.metatrack.api.service.AssayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,6 +43,14 @@ public class AssayController {
 			@PathVariable String investigationId, @PathVariable String studyId) {
 		AssayResponse response = assayService.getAssayById(assayId);
 		return ResponseEntity.ok(response);
+	}
+
+	@PutMapping("/{assayId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
+	public ResponseEntity<AssayResponse> updateAssay(UpdateAssayRequest request, @PathVariable String assayId,
+			@PathVariable String investigationId, @PathVariable String studyId) {
+		AssayResponse assayResponse = assayService.updateAssay(assayId, request);
+		return ResponseEntity.ok(assayResponse);
 	}
 
 }

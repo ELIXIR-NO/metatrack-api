@@ -2,6 +2,7 @@ package no.metatrack.api.service;
 
 import no.metatrack.api.dto.AssayResponse;
 import no.metatrack.api.dto.CreateAssayRequest;
+import no.metatrack.api.dto.UpdateAssayRequest;
 import no.metatrack.api.node.Assay;
 import no.metatrack.api.node.Study;
 import no.metatrack.api.repository.AssayRepository;
@@ -42,6 +43,15 @@ public class AssayService {
 
 	private AssayResponse convertToAssayResponse(Assay assay) {
 		return new AssayResponse(assay.getId(), assay.getFilename());
+	}
+
+	public AssayResponse updateAssay(String assayId, UpdateAssayRequest request) {
+		Assay assay = assayRepository.findById(assayId).orElseThrow();
+		if (request.filename() != null) {
+			assay.setFilename(request.filename().trim());
+		}
+		Assay savedAssay = assayRepository.save(assay);
+		return convertToAssayResponse(savedAssay);
 	}
 
 }
