@@ -1,6 +1,7 @@
 package no.metatrack.api.repository;
 
 import no.metatrack.api.node.Investigation;
+import no.metatrack.api.node.Study;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,8 @@ public interface InvestigationRepository extends Neo4jRepository<Investigation, 
 
 	@Query("match (i:Investigation)-[:HAS_MEMBER]->(u:User {id: $userId}) return i")
 	List<Investigation> findAllByUserId(String userId);
+
+	@Query("match (i:Investigation {id: $investigationId})-[:HAS_STUDY]->(s:Study) return s")
+	List<Study> findAllStudies(String investigationId);
 
 }

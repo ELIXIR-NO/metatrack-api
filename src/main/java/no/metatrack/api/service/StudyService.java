@@ -1,6 +1,7 @@
 package no.metatrack.api.service;
 
 import jakarta.validation.Valid;
+import jakarta.ws.rs.NotFoundException;
 import no.metatrack.api.dto.CreateStudyRequest;
 import no.metatrack.api.dto.StudyResponse;
 import no.metatrack.api.dto.UpdateStudyRequest;
@@ -12,6 +13,8 @@ import no.metatrack.api.repository.StudyRepository;
 import no.metatrack.api.utils.TextUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class StudyService {
@@ -74,6 +77,15 @@ public class StudyService {
 
 		Study savedStudy = studyRepository.save(study);
 		return convertToStudyResponse(savedStudy);
+	}
+
+	public List<StudyResponse> getAllStudies(String investigationId) {
+		boolean checkInvestigation = investigationRepository.existsById(investigationId);
+		if (!checkInvestigation)
+			throw new NotFoundException("Investigation not found!");
+
+		List<Study> studies = investigationRepository.findAllStudies(investigationId);
+		return studies.stream().map(this::convertToStudyResponse).toList();
 	}
 
 }
