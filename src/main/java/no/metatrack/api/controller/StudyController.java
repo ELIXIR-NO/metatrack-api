@@ -3,6 +3,7 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateStudyRequest;
 import no.metatrack.api.dto.StudyResponse;
+import no.metatrack.api.dto.UpdateStudyRequest;
 import no.metatrack.api.service.StudyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,6 +42,14 @@ public class StudyController {
 	public ResponseEntity<StudyResponse> getStudyById(@PathVariable String investigationId,
 			@PathVariable String studyId) {
 		StudyResponse studyResponse = studyService.getStudyById(studyId);
+		return ResponseEntity.ok(studyResponse);
+	}
+
+	@PutMapping("/{studyId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
+	public ResponseEntity<StudyResponse> updateStudy(@Valid @RequestBody UpdateStudyRequest request,
+			@PathVariable String investigationId, @PathVariable String studyId) {
+		StudyResponse studyResponse = studyService.updateStudy(request, studyId);
 		return ResponseEntity.ok(studyResponse);
 	}
 

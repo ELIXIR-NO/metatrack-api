@@ -3,6 +3,8 @@ package no.metatrack.api.service;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateStudyRequest;
 import no.metatrack.api.dto.StudyResponse;
+import no.metatrack.api.dto.UpdateStudyRequest;
+import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.Investigation;
 import no.metatrack.api.node.Study;
 import no.metatrack.api.repository.InvestigationRepository;
@@ -48,6 +50,30 @@ public class StudyService {
 	private StudyResponse convertToStudyResponse(Study study) {
 		return new StudyResponse(study.getId(), study.getIdentifier(), study.getTitle(), study.getDescription(),
 				study.getFilename());
+	}
+
+	public StudyResponse updateStudy(@Valid UpdateStudyRequest request, String studyId) {
+		boolean checkStudyIdentifier = studyRepository.existsByIdentifier(request.identifier().trim());
+		if (checkStudyIdentifier)
+			throw new ResourceAlreadyExistsException("Identifier is already in use!");
+
+		Study study = studyRepository.findById(studyId).orElseThrow();
+
+		if (request.identifier() != null) {
+			study.setIdentifier(request.identifier().trim());
+		}
+		if (request.title() != null) {
+			study.setTitle(request.title().trim());
+		}
+		if (request.description() != null) {
+			study.setDescription(request.description().trim());
+		}
+		if (request.filename() != null) {
+			study.setFilename(request.filename().trim());
+		}
+
+		Study savedStudy = studyRepository.save(study);
+		return convertToStudyResponse(savedStudy);
 	}
 
 }
