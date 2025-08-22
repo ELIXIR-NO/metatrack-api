@@ -45,13 +45,13 @@ public class InvestigationController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/id/{investigationId}")
+	@GetMapping("/{investigationId}")
 	public ResponseEntity<InvestigationResponse> getInvestigationById(@PathVariable String investigationId) {
 		InvestigationResponse investigation = investigationService.getInvestigationById(investigationId);
 		return ResponseEntity.ok(investigation);
 	}
 
-	@PutMapping("/id/{investigationId}")
+	@PutMapping("/{investigationId}")
 	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
 	public ResponseEntity<InvestigationResponse> updateInvestigation(@PathVariable String investigationId,
 			@Valid @RequestBody UpdateInvestigationRequest request) {
