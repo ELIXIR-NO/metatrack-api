@@ -42,7 +42,7 @@ public class InvestigationAccess {
 		if (member == null)
 			return false;
 
-		return member.getRole().ordinal() > requiredRole.ordinal() && hasAtLeastOrdered(member.getRole(), requiredRole);
+		return hasAtLeastOrdered(member.getRole(), requiredRole);
 	}
 
 	private boolean hasAtLeastOrdered(InvestigationRole actualRole, InvestigationRole requiredRole) {
