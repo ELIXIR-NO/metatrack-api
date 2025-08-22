@@ -2,6 +2,7 @@ package no.metatrack.api.service;
 
 import no.metatrack.api.dto.CreateInvestigationRequest;
 import no.metatrack.api.dto.InvestigationResponse;
+import no.metatrack.api.dto.UpdateInvestigationRequest;
 import no.metatrack.api.enums.InvestigationRole;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.Investigation;
@@ -77,6 +78,30 @@ public class InvestigationService {
 	public InvestigationResponse getInvestigationById(String investigationId) {
 		Investigation investigation = investigationRepository.findById(investigationId).orElseThrow();
 		return convertToInvestigationResponse(investigation);
+	}
+
+	public InvestigationResponse updateInvestigation(UpdateInvestigationRequest request, String investigationId) {
+		boolean checkInvestigation = investigationRepository.existsByIdentifier(request.identifier());
+		if (checkInvestigation) {
+			throw new ResourceAlreadyExistsException("Identifier is already in use!");
+		}
+
+		Investigation investigation = investigationRepository.findById(investigationId).orElseThrow();
+		if (request.identifier() != null) {
+			investigation.setIdentifier(request.identifier().trim());
+		}
+		if (request.title() != null) {
+			investigation.setTitle(request.title().trim());
+		}
+		if (request.description() != null) {
+			investigation.setDescription(request.description().trim());
+		}
+		if (request.filename() != null) {
+			investigation.setFilename(request.filename().trim());
+		}
+
+		Investigation savedInvestigation = investigationRepository.save(investigation);
+		return convertToInvestigationResponse(savedInvestigation);
 	}
 
 }

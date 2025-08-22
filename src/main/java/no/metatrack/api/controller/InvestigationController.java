@@ -3,8 +3,10 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateInvestigationRequest;
 import no.metatrack.api.dto.InvestigationResponse;
+import no.metatrack.api.dto.UpdateInvestigationRequest;
 import no.metatrack.api.service.InvestigationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,14 @@ public class InvestigationController {
 	@GetMapping("/id/{investigationId}")
 	public ResponseEntity<InvestigationResponse> getInvestigationById(@PathVariable String investigationId) {
 		InvestigationResponse investigation = investigationService.getInvestigationById(investigationId);
+		return ResponseEntity.ok(investigation);
+	}
+
+	@PutMapping("/id/{investigationId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
+	public ResponseEntity<InvestigationResponse> updateInvestigation(@PathVariable String investigationId,
+			@Valid @RequestBody UpdateInvestigationRequest request) {
+		InvestigationResponse investigation = investigationService.updateInvestigation(request, investigationId);
 		return ResponseEntity.ok(investigation);
 	}
 
