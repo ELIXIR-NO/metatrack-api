@@ -4,16 +4,15 @@ import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateStudyRequest;
 import no.metatrack.api.dto.StudyResponse;
 import no.metatrack.api.service.StudyService;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/api/v1/investigations/{investigationId}/studies", consumes = MediaType.APPLICATION_JSON_VALUE,
-		produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/investigations/{investigationId}/studies")
 public class StudyController {
 
 	private final StudyService studyService;
@@ -23,6 +22,7 @@ public class StudyController {
 	}
 
 	@PostMapping
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
 	public ResponseEntity<StudyResponse> createStudy(@PathVariable String investigationId,
 			@Valid @RequestBody CreateStudyRequest request) {
 
@@ -34,6 +34,14 @@ public class StudyController {
 			.toUri();
 
 		return ResponseEntity.created(location).body(response);
+	}
+
+	@GetMapping("/{studyId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
+	public ResponseEntity<StudyResponse> getStudyById(@PathVariable String investigationId,
+			@PathVariable String studyId) {
+		StudyResponse studyResponse = studyService.getStudyById(studyId);
+		return ResponseEntity.ok(studyResponse);
 	}
 
 }

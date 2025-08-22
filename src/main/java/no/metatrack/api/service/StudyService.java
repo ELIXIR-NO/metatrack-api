@@ -37,8 +37,17 @@ public class StudyService {
 
 		Study savedStudy = studyRepository.save(newStudy);
 
-		return new StudyResponse(savedStudy.getId(), savedStudy.getIdentifier(), savedStudy.getTitle(),
-				savedStudy.getDescription(), savedStudy.getFilename());
+		return convertToStudyResponse(savedStudy);
+	}
+
+	public StudyResponse getStudyById(String studyId) {
+		Study study = studyRepository.findById(studyId).orElseThrow();
+		return convertToStudyResponse(study);
+	}
+
+	private StudyResponse convertToStudyResponse(Study study) {
+		return new StudyResponse(study.getId(), study.getIdentifier(), study.getTitle(), study.getDescription(),
+				study.getFilename());
 	}
 
 }
