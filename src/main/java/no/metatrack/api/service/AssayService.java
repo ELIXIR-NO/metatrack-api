@@ -32,7 +32,16 @@ public class AssayService {
 			.build();
 
 		Assay savedAssay = assayRepository.save(newAssay);
-		return new AssayResponse(savedAssay.getId(), savedAssay.getFilename());
+		return convertToAssayResponse(savedAssay);
+	}
+
+	public AssayResponse getAssayById(String assayId) {
+		Assay assay = assayRepository.findById(assayId).orElseThrow();
+		return convertToAssayResponse(assay);
+	}
+
+	private AssayResponse convertToAssayResponse(Assay assay) {
+		return new AssayResponse(assay.getId(), assay.getFilename());
 	}
 
 }

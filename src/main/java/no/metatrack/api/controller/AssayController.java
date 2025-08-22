@@ -36,4 +36,12 @@ public class AssayController {
 		return ResponseEntity.created(location).body(response);
 	}
 
+	@GetMapping("/{assayId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
+	public ResponseEntity<AssayResponse> getAssayById(@PathVariable String assayId,
+			@PathVariable String investigationId, @PathVariable String studyId) {
+		AssayResponse response = assayService.getAssayById(assayId);
+		return ResponseEntity.ok(response);
+	}
+
 }
