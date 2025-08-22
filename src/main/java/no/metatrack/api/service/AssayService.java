@@ -1,5 +1,6 @@
 package no.metatrack.api.service;
 
+import jakarta.ws.rs.NotFoundException;
 import no.metatrack.api.dto.AssayResponse;
 import no.metatrack.api.dto.CreateAssayRequest;
 import no.metatrack.api.dto.UpdateAssayRequest;
@@ -10,6 +11,8 @@ import no.metatrack.api.repository.StudyRepository;
 import no.metatrack.api.utils.TextUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class AssayService {
@@ -52,6 +55,17 @@ public class AssayService {
 		}
 		Assay savedAssay = assayRepository.save(assay);
 		return convertToAssayResponse(savedAssay);
+	}
+
+	public List<AssayResponse> getAllAssays(String studyId) {
+		boolean checkStudy = studyRepository.existsById(studyId);
+		if (!checkStudy)
+			throw new NotFoundException("Study not found!");
+
+		List<Assay> assays = studyRepository.findAllAssay(studyId);
+
+		return assays.stream().map(this::convertToAssayResponse).toList();
+
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/investigations/{investigationId}/studies/{studyId}/assays")
@@ -35,6 +36,14 @@ public class AssayController {
 			.toUri();
 
 		return ResponseEntity.created(location).body(response);
+	}
+
+	@GetMapping
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
+	public ResponseEntity<List<AssayResponse>> getAllAssays(@PathVariable String investigationId,
+			@PathVariable String studyId) {
+		List<AssayResponse> assays = assayService.getAllAssays(studyId);
+		return ResponseEntity.ok(assays);
 	}
 
 	@GetMapping("/{assayId}")
