@@ -5,6 +5,7 @@ import no.metatrack.api.dto.CreateSampleRequest;
 import no.metatrack.api.dto.SampleResponse;
 import no.metatrack.api.service.SampleService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,6 +24,7 @@ public class SampleController {
 	}
 
 	@PostMapping
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
 	public ResponseEntity<SampleResponse> createSample(@PathVariable String investigationId,
 			@PathVariable String studyId, @PathVariable String assayId,
 			@Valid @RequestBody CreateSampleRequest request) {
@@ -38,6 +40,7 @@ public class SampleController {
 	}
 
 	@GetMapping("/id/{sampleId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
 	public ResponseEntity<SampleResponse> getSampleById(@PathVariable String investigationId,
 			@PathVariable String studyId, @PathVariable String assayId, @PathVariable String sampleId) {
 		SampleResponse response = sampleService.getSampleById(sampleId);
@@ -45,6 +48,7 @@ public class SampleController {
 	}
 
 	@GetMapping("/name/{sampleName}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
 	public ResponseEntity<SampleResponse> getSampleByName(@PathVariable String investigationId,
 			@PathVariable String studyId, @PathVariable String assayId, @PathVariable String sampleName) {
 		SampleResponse response = sampleService.getSampleByName(sampleName);
@@ -52,6 +56,7 @@ public class SampleController {
 	}
 
 	@GetMapping
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
 	public ResponseEntity<List<SampleResponse>> getAllSamplesInAssay(@PathVariable String investigationId,
 			@PathVariable String studyId, @PathVariable String assayId) {
 
@@ -61,6 +66,7 @@ public class SampleController {
 	}
 
 	@DeleteMapping("/id/{sampleId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
 	public ResponseEntity<Void> deleteSample(@PathVariable String investigationId, @PathVariable String studyId,
 			@PathVariable String assayId, @PathVariable String sampleId) {
 		sampleService.deleteSampleById(sampleId);
@@ -69,6 +75,7 @@ public class SampleController {
 	}
 
 	@PostMapping("/upload")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
 	public ResponseEntity<Void> uploadSampleTable(@PathVariable String assayId,
 			@RequestParam("file") MultipartFile file, @PathVariable String investigationId,
 			@PathVariable String studyId) {
