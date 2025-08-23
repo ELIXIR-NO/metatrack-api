@@ -13,7 +13,7 @@ public interface StudyRepository extends Neo4jRepository<Study, String> {
 
 	boolean existsByIdentifier(String identifier);
 
-	@Query("match (s:Study {id: $studyId})-[:HAS_ASSAY]->(a:Assay) return a")
-	List<Assay> findAllAssay(String studyId);
+	@Query("match (s:Study {id: $studyId})-[:HAS_ASSAY]->(a:Assay) return a{.*, id: a.id}")
+	List<Assay> findAllAssays(String studyId);
 
 }

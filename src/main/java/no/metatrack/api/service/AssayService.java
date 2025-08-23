@@ -62,7 +62,7 @@ public class AssayService {
 		if (!checkStudy)
 			throw new NotFoundException("Study not found!");
 
-		List<Assay> assays = studyRepository.findAllAssay(studyId);
+		List<Assay> assays = studyRepository.findAllAssays(studyId);
 
 		return assays.stream().map(this::convertToAssayResponse).toList();
 
