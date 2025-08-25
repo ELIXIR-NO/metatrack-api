@@ -2,6 +2,8 @@ package no.metatrack.api.service;
 
 import no.metatrack.api.dto.NCBITaxonomyNode;
 import no.metatrack.api.dto.NCBITaxonomyResponse;
+import no.metatrack.api.node.OntologyAnnotation;
+import no.metatrack.api.node.OntologySourceReference;
 import no.metatrack.api.pojo.Taxonomy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -52,6 +54,21 @@ public class NCBIApiService {
 			return Optional.empty();
 		}
 		return Optional.ofNullable(taxonomyList.getFirst());
+	}
+
+	public OntologySourceReference getNCBITaxonomyOntologySourceReference() {
+		return OntologySourceReference.builder().name("NCBI").description("NCBI taxonomy").build();
+	}
+
+	public OntologyAnnotation getNCBITaxonomyOntologyAnnotation(String taxId) {
+		Taxonomy taxonomy = getTaxonomyData(taxId).orElseThrow();
+		String organismName = taxonomy.getOrganismName();
+        
+		return OntologyAnnotation.builder()
+			.annotationValue(organismName)
+			.termAccession(taxId)
+			.termSource(getNCBITaxonomyOntologySourceReference())
+			.build();
 	}
 
 }
