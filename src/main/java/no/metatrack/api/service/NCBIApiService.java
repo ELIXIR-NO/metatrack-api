@@ -57,13 +57,17 @@ public class NCBIApiService {
 	}
 
 	public OntologySourceReference getNCBITaxonomyOntologySourceReference() {
-		return OntologySourceReference.builder().name("NCBI").description("NCBI taxonomy").build();
+		return OntologySourceReference.builder()
+			.name("NCBI")
+			.version("Dataset v2")
+			.description("NCBI taxonomy")
+			.build();
 	}
 
 	public OntologyAnnotation getNCBITaxonomyOntologyAnnotation(String taxId) {
 		Taxonomy taxonomy = getTaxonomyData(taxId).orElseThrow();
 		String organismName = taxonomy.getOrganismName();
-        
+
 		return OntologyAnnotation.builder()
 			.annotationValue(organismName)
 			.termAccession(taxId)
