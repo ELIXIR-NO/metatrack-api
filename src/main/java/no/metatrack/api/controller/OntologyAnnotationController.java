@@ -5,6 +5,7 @@ import no.metatrack.api.dto.CreateOntologyAnnotationRequest;
 import no.metatrack.api.dto.OntologyAnnotationResponse;
 import no.metatrack.api.service.OntologyAnnotationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,6 +22,7 @@ public class OntologyAnnotationController {
 	}
 
 	@PostMapping
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
 	public ResponseEntity<OntologyAnnotationResponse> createOntologyAnnotation(@PathVariable String investigationId,
 			@PathVariable String sourceId, @Valid @RequestBody CreateOntologyAnnotationRequest request) {
 
