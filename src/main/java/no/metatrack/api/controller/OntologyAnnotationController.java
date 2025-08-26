@@ -37,4 +37,14 @@ public class OntologyAnnotationController {
 
 	}
 
+	@GetMapping("/{annotationId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
+	public ResponseEntity<OntologyAnnotationResponse> getOntologyAnnotation(@PathVariable String investigationId,
+			@PathVariable String sourceId, @PathVariable String annotationId) {
+
+		OntologyAnnotationResponse response = ontologyAnnotationService.getOntologyAnnotationById(annotationId);
+
+		return ResponseEntity.ok(response);
+	}
+
 }

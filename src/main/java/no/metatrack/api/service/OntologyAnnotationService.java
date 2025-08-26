@@ -39,4 +39,8 @@ public class OntologyAnnotationService {
 				annotation.getTermAccession(), annotation.getTermSource());
 	}
 
+	public OntologyAnnotationResponse getOntologyAnnotationById(String annotationId) {
+		return convertToOntologyAnnotationResponse(ontologyAnnotationRepository.findById(annotationId).orElseThrow());
+	}
+
 }
