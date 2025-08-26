@@ -6,6 +6,7 @@ import no.metatrack.api.dto.UpdateInvestigationRequest;
 import no.metatrack.api.enums.InvestigationRole;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.Investigation;
+import no.metatrack.api.node.OntologySourceReference;
 import no.metatrack.api.node.User;
 import no.metatrack.api.relations.InvestigationMember;
 import no.metatrack.api.repository.InvestigationRepository;
@@ -24,9 +25,13 @@ public class InvestigationService {
 
 	private final UserRepository userRepository;
 
-	public InvestigationService(InvestigationRepository investigationRepository, UserRepository userRepository) {
+	private final NCBIApiService nCBIApiService;
+
+	public InvestigationService(InvestigationRepository investigationRepository, UserRepository userRepository,
+			NCBIApiService nCBIApiService) {
 		this.investigationRepository = investigationRepository;
 		this.userRepository = userRepository;
+		this.nCBIApiService = nCBIApiService;
 	}
 
 	public InvestigationResponse createInvestigation(CreateInvestigationRequest request, String userId) {
@@ -37,11 +42,14 @@ public class InvestigationService {
 		User user = userRepository.findById(userId).orElseThrow();
 		InvestigationMember owner = InvestigationMember.builder().user(user).role(InvestigationRole.OWNER).build();
 
+		OntologySourceReference ncbiReference = nCBIApiService.getNCBITaxonomyOntologySourceReference();
+
 		Investigation newInvestigation = Investigation.builder()
 			.identifier(request.identifier())
 			.title(request.title())
 			.description(TextUtils.convertBlankStringToNull(request.description()))
 			.filename(TextUtils.convertBlankStringToNull(request.filename()))
+			.ontologies(Set.of(ncbiReference))
 			.members(Set.of(owner))
 			.build();
 
