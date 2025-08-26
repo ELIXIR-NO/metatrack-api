@@ -1,6 +1,7 @@
 package no.metatrack.api.repository;
 
 import no.metatrack.api.node.Investigation;
+import no.metatrack.api.node.OntologySourceReference;
 import no.metatrack.api.node.Study;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
@@ -18,5 +19,8 @@ public interface InvestigationRepository extends Neo4jRepository<Investigation, 
 
 	@Query("match (i:Investigation {id: $investigationId})-[:HAS_STUDY]->(s:Study) return s")
 	List<Study> findAllStudies(String investigationId);
+
+	@Query("match (i:Investigation {id: $investigationId})-[:HAS_ONTOLOGY]->(o:OntologySourceReference) return o")
+	List<OntologySourceReference> findAllOntologySourceReferences(String investigationId);
 
 }
