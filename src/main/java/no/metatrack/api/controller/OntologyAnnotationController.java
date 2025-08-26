@@ -11,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/investigation/{investigationId}/ontology/{sourceId}/ontology-annotations")
+@RequestMapping("/api/v1/investigations/{investigationId}/ontology/sources/{sourceId}/annotations")
 public class OntologyAnnotationController {
 
 	private final OntologyAnnotationService ontologyAnnotationService;
@@ -27,7 +27,7 @@ public class OntologyAnnotationController {
 		OntologyAnnotationResponse response = ontologyAnnotationService.createNewAnnotation(sourceId, request);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-			.path("/api/v1/investigation/{investigationId}/ontology/{sourceId}/ontology-annotations/{id}")
+			.path("/api/v1/investigations/{investigationId}/ontology/sources/{sourceId}/annotations/{id}")
 			.buildAndExpand(investigationId, sourceId, response.id())
 			.toUri();
 
