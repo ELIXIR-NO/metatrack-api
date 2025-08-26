@@ -91,4 +91,8 @@ public class OntologySourceReferenceService {
 		ontologySourceReferenceRepository.deleteById(sourceId);
 	}
 
+	public void deleteOntologySourceAndAnnotations(String sourceId) {
+		ontologySourceReferenceRepository.deleteOntologySourceReferenceAndAnnotations(sourceId);
+	}
+
 }

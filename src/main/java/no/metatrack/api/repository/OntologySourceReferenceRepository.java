@@ -14,4 +14,11 @@ public interface OntologySourceReferenceRepository extends Neo4jRepository<Ontol
 	@Query("match (s:OntologySourceReference {id: $sourceId})-[:HAS_ANNOTATION]->(a:OntologyAnnotation) return a{.*, id: a.id}")
 	List<OntologyAnnotation> findAllOntologyAnnotations(String sourceId);
 
+	@Query("""
+			match (s:OntologySourceReference {id: $sourceId})-[:HAS_ANNOTATION]->(a:OntologyAnnotation)
+			detach delete a
+			detach delete s
+			""")
+	void deleteOntologySourceReferenceAndAnnotations(String sourceId);
+
 }

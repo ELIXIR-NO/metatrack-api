@@ -74,4 +74,12 @@ public class OntologySourceReferenceController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@DeleteMapping("/{sourceId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
+	public ResponseEntity<Void> deleteOntologySourceWithAnnotations(@PathVariable String investigationId,
+			@PathVariable String sourceId) {
+		ontologySourceReferenceService.deleteOntologySourceAndAnnotations(sourceId);
+		return ResponseEntity.noContent().build();
+	}
+
 }
