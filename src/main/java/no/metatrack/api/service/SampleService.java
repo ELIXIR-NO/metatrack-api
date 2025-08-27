@@ -4,8 +4,7 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
-import no.metatrack.api.dto.CreateSampleRequest;
-import no.metatrack.api.dto.SampleResponse;
+import no.metatrack.api.dto.*;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.*;
 import no.metatrack.api.repository.*;
@@ -24,6 +23,7 @@ import java.io.Reader;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -91,7 +91,68 @@ public class SampleService {
 
 	private SampleResponse convertToSampleResponse(Sample sample) {
 		return new SampleResponse(sample.getId(), sample.getName(), sample.getRawAttributes(),
-				sample.getCharacteristics(), sample.getFactorValues(), sample.getDerivedFrom());
+				convertMaterialAttributeValues(sample.getCharacteristics()),
+				convertFactorValues(sample.getFactorValues()), convertSources(sample.getDerivedFrom()));
+
+	}
+
+	private Collection<SimpleMaterialAttributeValueResponse> convertMaterialAttributeValues(
+			Collection<MaterialAttributeValue> materialAttributeValues) {
+		if (materialAttributeValues == null)
+			return null;
+
+		return materialAttributeValues.stream().map(this::convertMaterialAttributeValue).toList();
+	}
+
+	private SimpleMaterialAttributeValueResponse convertMaterialAttributeValue(MaterialAttributeValue mav) {
+		return new SimpleMaterialAttributeValueResponse(mav.getId(), convertMaterialAttribute(mav.getCategory()),
+				convertOntologyAnnotation(mav.getUnit()), mav.getValue());
+	}
+
+	private SimpleMaterialAttributeResponse convertMaterialAttribute(MaterialAttribute ma) {
+		if (ma == null)
+			return null;
+
+		return new SimpleMaterialAttributeResponse(ma.getId(), convertOntologyAnnotation(ma.getCharacteristicType()));
+	}
+
+	private Collection<SimpleFactorValueResponse> convertFactorValues(Collection<FactorValue> factorValues) {
+		if (factorValues == null)
+			return null;
+
+		return factorValues.stream().map(this::convertFactorValue).toList();
+	}
+
+	private SimpleFactorValueResponse convertFactorValue(FactorValue fv) {
+		return new SimpleFactorValueResponse(fv.getId(), convertFactor(fv.getCategory()),
+				convertOntologyAnnotation(fv.getUnit()), fv.getValue());
+	}
+
+	private SimpleFactorResponse convertFactor(Factor factor) {
+		if (factor == null)
+			return null;
+
+		return new SimpleFactorResponse(factor.getId(), factor.getFactorName(),
+				convertOntologyAnnotation(factor.getFactorType()));
+	}
+
+	private Collection<SimpleSourceResponse> convertSources(Collection<Source> sources) {
+		if (sources == null)
+			return null;
+
+		return sources.stream().map(this::convertSource).toList();
+	}
+
+	private SimpleSourceResponse convertSource(Source source) {
+		return new SimpleSourceResponse(source.getId(), source.getName(),
+				convertMaterialAttributeValues(source.getCharacteristics()));
+	}
+
+	private SimpleOntologyAnnotationResponse convertOntologyAnnotation(OntologyAnnotation oa) {
+		if (oa == null)
+			return null;
+
+		return new SimpleOntologyAnnotationResponse(oa.getId(), oa.getTermAccession(), oa.getAnnotationValue());
 	}
 
 	@Transactional
