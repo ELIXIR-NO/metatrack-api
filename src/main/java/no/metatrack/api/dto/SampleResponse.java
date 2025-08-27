@@ -7,7 +7,7 @@ import no.metatrack.api.node.Source;
 
 import java.util.Collection;
 
-public record SampleResponse(String name, Collection<SampleAttribute> rawAttributes,
+public record SampleResponse(String id, String name, Collection<SampleAttribute> rawAttributes,
 		Collection<MaterialAttributeValue> materialAttributeValues, Collection<FactorValue> factorValues,
 		Collection<Source> sources) {
 }

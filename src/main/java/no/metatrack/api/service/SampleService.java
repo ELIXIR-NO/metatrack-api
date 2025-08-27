@@ -90,8 +90,8 @@ public class SampleService {
 	}
 
 	private SampleResponse convertToSampleResponse(Sample sample) {
-		return new SampleResponse(sample.getName(), sample.getRawAttributes(), sample.getCharacteristics(),
-				sample.getFactorValues(), sample.getDerivedFrom());
+		return new SampleResponse(sample.getId(), sample.getName(), sample.getRawAttributes(),
+				sample.getCharacteristics(), sample.getFactorValues(), sample.getDerivedFrom());
 	}
 
 	@Transactional
