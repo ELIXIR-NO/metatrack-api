@@ -2,7 +2,7 @@ package no.metatrack.api.controller;
 
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateOntologyAnnotationRequest;
-import no.metatrack.api.dto.OntologyAnnotationResponse;
+import no.metatrack.api.dto.SimpleOntologyAnnotationResponse;
 import no.metatrack.api.dto.UpdateOntologyAnnotationRequest;
 import no.metatrack.api.service.OntologyAnnotationService;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +25,11 @@ public class OntologyAnnotationController {
 
 	@PostMapping
 	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
-	public ResponseEntity<OntologyAnnotationResponse> createOntologyAnnotation(@PathVariable String investigationId,
-			@PathVariable String sourceId, @Valid @RequestBody CreateOntologyAnnotationRequest request) {
+	public ResponseEntity<SimpleOntologyAnnotationResponse> createOntologyAnnotation(
+			@PathVariable String investigationId, @PathVariable String sourceId,
+			@Valid @RequestBody CreateOntologyAnnotationRequest request) {
 
-		OntologyAnnotationResponse response = ontologyAnnotationService.createNewAnnotation(sourceId, request);
+		SimpleOntologyAnnotationResponse response = ontologyAnnotationService.createNewAnnotation(sourceId, request);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/api/v1/investigations/{investigationId}/ontology/sources/{sourceId}/annotations/{id}")
@@ -41,31 +42,31 @@ public class OntologyAnnotationController {
 
 	@GetMapping("/{annotationId}")
 	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
-	public ResponseEntity<OntologyAnnotationResponse> getOntologyAnnotation(@PathVariable String investigationId,
+	public ResponseEntity<SimpleOntologyAnnotationResponse> getOntologyAnnotation(@PathVariable String investigationId,
 			@PathVariable String sourceId, @PathVariable String annotationId) {
 
-		OntologyAnnotationResponse response = ontologyAnnotationService.getOntologyAnnotationById(annotationId);
+		SimpleOntologyAnnotationResponse response = ontologyAnnotationService.getOntologyAnnotationById(annotationId);
 
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping
 	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).READER)")
-	public ResponseEntity<List<OntologyAnnotationResponse>> getAllOntologyAnnotations(
+	public ResponseEntity<List<SimpleOntologyAnnotationResponse>> getAllOntologyAnnotations(
 			@PathVariable String investigationId, @PathVariable String sourceId) {
 
-		List<OntologyAnnotationResponse> response = ontologyAnnotationService.getAllAnnotations(sourceId);
+		List<SimpleOntologyAnnotationResponse> response = ontologyAnnotationService.getAllAnnotations(sourceId);
 
 		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping("/{annotationId}")
 	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
-	public ResponseEntity<OntologyAnnotationResponse> updateOntologyAnnotation(@PathVariable String investigationId,
-			@PathVariable String sourceId, @PathVariable String annotationId,
+	public ResponseEntity<SimpleOntologyAnnotationResponse> updateOntologyAnnotation(
+			@PathVariable String investigationId, @PathVariable String sourceId, @PathVariable String annotationId,
 			@Valid @RequestBody UpdateOntologyAnnotationRequest request) {
 
-		OntologyAnnotationResponse response = ontologyAnnotationService.updateAnnotation(annotationId, request);
+		SimpleOntologyAnnotationResponse response = ontologyAnnotationService.updateAnnotation(annotationId, request);
 
 		return ResponseEntity.ok(response);
 
