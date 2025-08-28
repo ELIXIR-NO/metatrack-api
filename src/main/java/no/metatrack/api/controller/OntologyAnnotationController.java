@@ -86,4 +86,14 @@ public class OntologyAnnotationController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PostMapping("/batch")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
+	public ResponseEntity<Void> createMultipleOntologyAnnotations(@PathVariable String investigationId,
+			@PathVariable String sourceId, @Valid @RequestBody List<String> request) {
+
+		ontologyAnnotationService.batchAddOntologyAnnotations(sourceId, request);
+
+		return ResponseEntity.ok().build();
+	}
+
 }

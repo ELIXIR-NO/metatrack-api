@@ -9,6 +9,7 @@ import no.metatrack.api.node.OntologySourceReference;
 import no.metatrack.api.repository.OntologyAnnotationRepository;
 import no.metatrack.api.repository.OntologySourceReferenceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,6 +69,17 @@ public class OntologyAnnotationService {
 
 	public void deleteOntologyAnnotation(String annotationId) {
 		ontologyAnnotationRepository.deleteById(annotationId);
+	}
+
+	@Transactional
+	public void batchAddOntologyAnnotations(String sourceId, @Valid List<String> request) {
+		OntologySourceReference sourceReference = ontologySourceReferenceRepository.findById(sourceId).orElseThrow();
+
+		List<OntologyAnnotation> annotations = request.stream()
+			.map(req -> OntologyAnnotation.builder().annotationValue(req.trim()).termSource(sourceReference).build())
+			.toList();
+
+		ontologyAnnotationRepository.saveAll(annotations);
 	}
 
 }
