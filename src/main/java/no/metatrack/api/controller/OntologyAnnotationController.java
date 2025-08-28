@@ -5,7 +5,6 @@ import no.metatrack.api.dto.CreateOntologyAnnotationRequest;
 import no.metatrack.api.dto.OntologyAnnotationResponse;
 import no.metatrack.api.dto.UpdateOntologyAnnotationRequest;
 import no.metatrack.api.service.OntologyAnnotationService;
-import no.metatrack.api.service.OntologySourceReferenceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +19,8 @@ public class OntologyAnnotationController {
 
 	private final OntologyAnnotationService ontologyAnnotationService;
 
-	private final OntologySourceReferenceService ontologySourceReferenceService;
-
-	public OntologyAnnotationController(OntologyAnnotationService ontologyAnnotationService,
-			OntologySourceReferenceService ontologySourceReferenceService) {
+	public OntologyAnnotationController(OntologyAnnotationService ontologyAnnotationService) {
 		this.ontologyAnnotationService = ontologyAnnotationService;
-		this.ontologySourceReferenceService = ontologySourceReferenceService;
 	}
 
 	@PostMapping
