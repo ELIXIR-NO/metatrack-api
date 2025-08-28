@@ -2,13 +2,14 @@ package no.metatrack.api.service;
 
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateOntologyAnnotationRequest;
-import no.metatrack.api.dto.OntologyAnnotationResponse;
+import no.metatrack.api.dto.SimpleOntologyAnnotationResponse;
 import no.metatrack.api.dto.UpdateOntologyAnnotationRequest;
 import no.metatrack.api.node.OntologyAnnotation;
 import no.metatrack.api.node.OntologySourceReference;
 import no.metatrack.api.repository.OntologyAnnotationRepository;
 import no.metatrack.api.repository.OntologySourceReferenceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class OntologyAnnotationService {
 		this.ontologyAnnotationRepository = ontologyAnnotationRepository;
 	}
 
-	public OntologyAnnotationResponse createNewAnnotation(String sourceId, CreateOntologyAnnotationRequest request) {
+	public SimpleOntologyAnnotationResponse createNewAnnotation(String sourceId,
+			CreateOntologyAnnotationRequest request) {
 		OntologySourceReference sourceReference = ontologySourceReferenceRepository.findById(sourceId).orElseThrow();
 
 		OntologyAnnotation annotation = OntologyAnnotation.builder()
@@ -38,22 +40,24 @@ public class OntologyAnnotationService {
 		return convertToOntologyAnnotationResponse(savedAnnotation);
 	}
 
-	private OntologyAnnotationResponse convertToOntologyAnnotationResponse(OntologyAnnotation annotation) {
-		return new OntologyAnnotationResponse(annotation.getId(), annotation.getAnnotationValue(),
-				annotation.getTermAccession(), annotation.getTermSource());
+	private SimpleOntologyAnnotationResponse convertToOntologyAnnotationResponse(OntologyAnnotation oa) {
+		if (oa == null)
+			return null;
+
+		return new SimpleOntologyAnnotationResponse(oa.getId(), oa.getTermAccession(), oa.getAnnotationValue());
 	}
 
-	public OntologyAnnotationResponse getOntologyAnnotationById(String annotationId) {
+	public SimpleOntologyAnnotationResponse getOntologyAnnotationById(String annotationId) {
 		return convertToOntologyAnnotationResponse(ontologyAnnotationRepository.findById(annotationId).orElseThrow());
 	}
 
-	public List<OntologyAnnotationResponse> getAllAnnotations(String sourceId) {
+	public List<SimpleOntologyAnnotationResponse> getAllAnnotations(String sourceId) {
 		List<OntologyAnnotation> annotations = ontologySourceReferenceRepository.findAllOntologyAnnotations(sourceId);
 
 		return annotations.stream().map(this::convertToOntologyAnnotationResponse).toList();
 	}
 
-	public OntologyAnnotationResponse updateAnnotation(String annotationId,
+	public SimpleOntologyAnnotationResponse updateAnnotation(String annotationId,
 			@Valid UpdateOntologyAnnotationRequest request) {
 		OntologyAnnotation annotation = ontologyAnnotationRepository.findById(annotationId).orElseThrow();
 		if (request.annotationValue() != null) {
@@ -68,6 +72,17 @@ public class OntologyAnnotationService {
 
 	public void deleteOntologyAnnotation(String annotationId) {
 		ontologyAnnotationRepository.deleteById(annotationId);
+	}
+
+	@Transactional
+	public void batchAddOntologyAnnotations(String sourceId, @Valid List<String> request) {
+		OntologySourceReference sourceReference = ontologySourceReferenceRepository.findById(sourceId).orElseThrow();
+
+		List<OntologyAnnotation> annotations = request.stream()
+			.map(req -> OntologyAnnotation.builder().annotationValue(req.trim()).termSource(sourceReference).build())
+			.toList();
+
+		ontologyAnnotationRepository.saveAll(annotations);
 	}
 
 }
