@@ -82,7 +82,8 @@ public class OntologyAnnotationService {
 			.map(req -> OntologyAnnotation.builder().annotationValue(req.trim()).termSource(sourceReference).build())
 			.toList();
 
-		ontologyAnnotationRepository.saveAll(annotations);
+		sourceReference.getAnnotations().addAll(annotations);
+		ontologySourceReferenceRepository.save(sourceReference);
 	}
 
 }
