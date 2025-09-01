@@ -11,6 +11,8 @@ import no.metatrack.api.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class InvestigationMembershipService {
 
@@ -56,6 +58,21 @@ public class InvestigationMembershipService {
 
 	private boolean isUserMemberOfInvestigation(Investigation investigation, String userId) {
 		return investigation.getMembers().stream().anyMatch(member -> member.getUser().getId().equals(userId));
+	}
+
+	@Transactional
+	public void removeMember(String investigationId, String userId) {
+		Investigation investigation = investigationRepository.findById(investigationId).orElseThrow();
+		boolean removed = investigation.getMembers().removeIf(member -> hasUserId(member, userId));
+		if (!removed) {
+			throw new IllegalStateException("User is not member of investigation");
+		}
+		investigationRepository.save(investigation);
+
+	}
+
+	private boolean hasUserId(InvestigationMember member, String userId) {
+		return member != null && member.getUser() != null && Objects.equals(member.getUser().getId(), userId);
 	}
 
 }

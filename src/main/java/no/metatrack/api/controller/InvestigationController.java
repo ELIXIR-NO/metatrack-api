@@ -81,4 +81,11 @@ public class InvestigationController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@DeleteMapping("/{investigationId}/remove-member/{userId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
+	public ResponseEntity<Void> removeMember(@PathVariable String investigationId, @PathVariable String userId) {
+		investigationMembershipService.removeMember(investigationId, userId);
+		return ResponseEntity.noContent().build();
+	}
+
 }
