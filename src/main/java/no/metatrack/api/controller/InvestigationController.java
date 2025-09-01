@@ -73,7 +73,7 @@ public class InvestigationController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PutMapping("/{investigationId}/add-member/{userId}")
+	@PutMapping("/{investigationId}/update-member/{userId}")
 	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
 	public ResponseEntity<Void> modifyMembership(@PathVariable String investigationId, @PathVariable String userId,
 			@Valid @RequestParam InvestigationRole role) {
