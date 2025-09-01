@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateInvestigationRequest;
 import no.metatrack.api.dto.InvestigationResponse;
 import no.metatrack.api.dto.UpdateInvestigationRequest;
+import no.metatrack.api.enums.InvestigationRole;
+import no.metatrack.api.service.InvestigationMembershipService;
 import no.metatrack.api.service.InvestigationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +23,12 @@ public class InvestigationController {
 
 	private final InvestigationService investigationService;
 
-	public InvestigationController(InvestigationService investigationService) {
+	private final InvestigationMembershipService investigationMembershipService;
+
+	public InvestigationController(InvestigationService investigationService,
+			InvestigationMembershipService investigationMembershipService) {
 		this.investigationService = investigationService;
+		this.investigationMembershipService = investigationMembershipService;
 	}
 
 	@PostMapping
@@ -57,6 +63,29 @@ public class InvestigationController {
 			@Valid @RequestBody UpdateInvestigationRequest request) {
 		InvestigationResponse investigation = investigationService.updateInvestigation(request, investigationId);
 		return ResponseEntity.ok(investigation);
+	}
+
+	@PostMapping("/{investigationId}/add-member/{userId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
+	public ResponseEntity<Void> addMemberToInvestigation(@PathVariable String investigationId,
+			@PathVariable String userId, @Valid @RequestParam InvestigationRole role) {
+		investigationMembershipService.addNewMember(investigationId, userId, role);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{investigationId}/update-member/{userId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
+	public ResponseEntity<Void> modifyMembership(@PathVariable String investigationId, @PathVariable String userId,
+			@Valid @RequestParam InvestigationRole role) {
+		investigationMembershipService.modifyMemberRole(investigationId, userId, role);
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{investigationId}/remove-member/{userId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).ADMIN)")
+	public ResponseEntity<Void> removeMember(@PathVariable String investigationId, @PathVariable String userId) {
+		investigationMembershipService.removeMember(investigationId, userId);
+		return ResponseEntity.noContent().build();
 	}
 
 }
