@@ -4,6 +4,7 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
+import jakarta.validation.Valid;
 import no.metatrack.api.dto.*;
 import no.metatrack.api.exceptions.ResourceAlreadyExistsException;
 import no.metatrack.api.node.*;
@@ -285,6 +286,25 @@ public class SampleService {
 	public void deleteSampleById(String sampleId) {
 		sampleRepository.findById(sampleId).orElseThrow();
 		sampleRepository.deleteSampleAndAttributes(sampleId);
+	}
+
+	@Transactional
+	public void updateSampleById(String sampleId, @Valid UpdateSampleRequest request) {
+		Sample sample = sampleRepository.findById(sampleId).orElseThrow();
+
+		if (!sample.getName().equals(request.name()) && sampleRepository.existsByName(request.name())) {
+			throw new ResourceAlreadyExistsException("Sample with name " + request.name() + " already exists!");
+		}
+
+		List<SampleAttribute> rawAttributes = request.rawAttributes()
+			.stream()
+			.map(attr -> SampleAttribute.builder().name(attr.attributeName()).value(attr.value()).build())
+			.toList();
+
+		sample.setName(request.name());
+		sample.setRawAttributes(rawAttributes);
+
+		sampleRepository.save(sample);
 	}
 
 }

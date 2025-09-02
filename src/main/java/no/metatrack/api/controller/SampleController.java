@@ -3,6 +3,7 @@ package no.metatrack.api.controller;
 import jakarta.validation.Valid;
 import no.metatrack.api.dto.CreateSampleRequest;
 import no.metatrack.api.dto.SampleResponse;
+import no.metatrack.api.dto.UpdateSampleRequest;
 import no.metatrack.api.service.SampleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,6 +38,18 @@ public class SampleController {
 			.toUri();
 
 		return ResponseEntity.created(location).body(response);
+	}
+
+	@PutMapping("/id/{sampleId}")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
+	public ResponseEntity<Void> updateSample(@PathVariable String assayId, @PathVariable String investigationId,
+			@PathVariable String sampleId, @PathVariable String studyId,
+			@Valid @RequestBody UpdateSampleRequest request) {
+
+		sampleService.updateSampleById(sampleId, request);
+
+		return ResponseEntity.noContent().build();
+
 	}
 
 	@GetMapping("/id/{sampleId}")
