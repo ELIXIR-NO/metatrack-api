@@ -23,7 +23,10 @@ spec:
               name: bolt
           env:
             - name: NEO4J_AUTH
-              value: "neo4j/set_good_password_before_deploying" ###### NEED TO CHANGE THIS
+              valueFrom:
+                secretKeyRef:
+                  name: neo4j-secret
+                  key: auth
             - name: NEO4J_PLUGINS
               value: '["apoc"]'
             - name: NEO4J_server_memory_heap_max__size
