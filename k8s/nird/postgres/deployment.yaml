@@ -15,18 +15,35 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:15
+          image: postgres:17
           ports:
             - containerPort: 5432
           env:
             - name: POSTGRES_DB
               value: "keycloak"
             - name: POSTGRES_USER
-              value: "keycloak"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: "replace_with_strong_password" ###### NEED TO CHANGE THIS
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
             - name: PGDATA
               value: "/var/lib/postgresql/data/pgdata"
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: "md5"
+            - name: POSTGRES_INITDB_ARGS
+              value: "--auth-host=md5 --auth-local=md5"
+          command:
+            - docker-entrypoint.sh
+            - postgres
+            - -c
+            - listen_addresses=*
+            - -c
+            - max_connections=100
           resources:
             requests:
               memory: "256Mi"
