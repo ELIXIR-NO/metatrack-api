@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: metatrack-api-ingress
+  namespace: elixir-uit-ns11105k
+  annotations:
+    appstore.uninett.no/contact_email: joshua.baskaran@uit.no
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.elixir-uit.sigma2.no
+      secretName: wildcard-tls
+  rules:
+    - host: api.elixir-uit.sigma2.no
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metatrack-service
+                port:
+                  number: 8090

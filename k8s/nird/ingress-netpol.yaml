@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-apps
+  namespace: elixir-uit-ns11105k
+spec:
+  podSelector: { }  # Select all pods in namespace
+  policyTypes:
+    - Ingress
+  ingress:
+    - from: [ ]  # Allow all ingress traffic
+      ports:
+        - protocol: TCP
+          port: 8080  # Keycloak
+        - protocol: TCP
+          port: 7474  # Neo4j

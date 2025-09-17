@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: neo4j-ingress
+  namespace: elixir-uit-ns11105k
+  annotations:
+    appstore.uninett.no/contact_email: joshua.baskaran@uit.no
+    nginx.ingress.kubernetes.io/tcp-services-configmap: elixir-uit-ns11105k/tcp-services
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - db.elixir-uit.sigma2.no
+      secretName: wildcard-tls
+  rules:
+    - host: db.elixir-uit.sigma2.no
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: neo4j-service
+                port:
+                  number: 7474

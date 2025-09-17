@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cleanup-postgres-data
+  namespace: elixir-uit-ns11105k
+spec:
+  template:
+    spec:
+      containers:
+        - name: cleanup
+          image: busybox
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              echo "Cleaning PostgreSQL data directory..."
+              rm -rf /data/*
+              rm -rf /data/.*
+              echo "Data directory cleaned!"
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: 1ee308ae-34de-4138-b8c7-a001279d6e83
+      restartPolicy: Never
