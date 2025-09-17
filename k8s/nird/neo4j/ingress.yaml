@@ -5,6 +5,7 @@ metadata:
   namespace: elixir-uit-ns11105k
   annotations:
     appstore.uninett.no/contact_email: joshua.baskaran@uit.no
+    nginx.ingress.kubernetes.io/tcp-services-configmap: elixir-uit-ns11105k/tcp-services
 spec:
   ingressClassName: nginx
   tls:

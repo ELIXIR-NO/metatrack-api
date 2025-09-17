@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: elixir-uit-ns11105k
+data:
+  7687: "elixir-uit-ns11105k/neo4j-service:7687"
