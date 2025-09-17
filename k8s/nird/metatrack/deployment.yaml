@@ -49,6 +49,13 @@ spec:
               value: https://auth.elixir-uit.sigma2.no
             - name: KEYCLOAK_REALM
               value: metatrack
+            # Logging configuration
+            - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY
+              value: INFO
+            - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY_OAUTH2
+              value: INFO
+            - name: LOGGING_LEVEL_ROOT
+              value: INFO
           resources:
             requests:
               cpu: 1000m
