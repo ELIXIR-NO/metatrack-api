@@ -23,16 +23,11 @@ spec:
             # Neo4j configuration
             - name: SPRING_NEO4J_URI
               value: bolt://neo4j-service:7687
-            - name: SPRING_NEO4J_AUTHENTICATION_USERNAME
+            - name: SPRING_NEO4J_AUTHENTICATION
               valueFrom:
                 secretKeyRef:
                   name: neo4j-secret
-                  key: username
-            - name: SPRING_NEO4J_AUTHENTICATION_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: neo4j-secret
-                  key: password
+                  key: auth
             # Keycloak (issuer and token endpoints exposed via ingress)
             - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI
               value: https://auth.elixir-uit.sigma2.no/realms/metatrack
