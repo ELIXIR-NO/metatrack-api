@@ -10,7 +10,7 @@ spec:
   tls:
     - hosts:
         - api.elixir-uit.sigma2.no
-      secretName: api-tls
+      secretName: wildcard-tls
   rules:
     - host: api.elixir-uit.sigma2.no
       http:
