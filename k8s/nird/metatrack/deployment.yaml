@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/elixir-no/metatrack-api:sha-9e3108f
+          image: ghcr.io/elixir-no/metatrack-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
