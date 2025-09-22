@@ -26,8 +26,8 @@ spring:
 
 cors:
   allowed-origins:
-    - https://metatrack-ui.vercel.app
-    - https://metatrack.no
+    - "https://metatrack-ui.vercel.app"
+    - "https://metatrack.no"
 
 minio:
   endpoint: http://localhost:9000

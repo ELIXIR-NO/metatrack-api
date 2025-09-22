@@ -34,8 +34,8 @@ public class SecurityConfig {
 
 	private final List<String> allowedOrigins;
 
-	public SecurityConfig(@Value("${cors.allowed-origins}") List<String> allowedOrigins) {
-		this.allowedOrigins = allowedOrigins;
+	public SecurityConfig(CorsProperties corsProperties) {
+		this.allowedOrigins = corsProperties.getAllowedOrigins();
 	}
 
 	@Bean
