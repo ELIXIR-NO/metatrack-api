@@ -1,22 +1,79 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-ingress-to-apps
+  name: allow-keycloak-from-world
   namespace: elixir-uit-ns11105k
 spec:
-  podSelector: { }  # Select all pods in namespace
+  podSelector:
+    matchLabels:
+      app: keycloak
   policyTypes:
     - Ingress
   ingress:
-    - from: [ ]  # Allow all ingress traffic
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
       ports:
         - protocol: TCP
-          port: 8080  # Keycloak
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-neo4j-from-world
+  namespace: elixir-uit-ns11105k
+spec:
+  podSelector:
+    matchLabels:
+      app: neo4j
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
         - protocol: TCP
-          port: 7474  # Neo4j UI
+          port: 7474
         - protocol: TCP
-          port: 7687  # Neo4j Bolt
+          port: 7687
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-minio-from-world
+  namespace: elixir-uit-ns11105k
+spec:
+  podSelector:
+    matchLabels:
+      app: minio
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
         - protocol: TCP
-          port: 9000 # Minio API
+          port: 9000
         - protocol: TCP
-          port: 9001 # Minio Console
+          port: 9001
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-metatrack-api-from-world
+  namespace: elixir-uit-ns11105k
+spec:
+  podSelector:
+    matchLabels:
+      app: metatrack-api
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 8080
