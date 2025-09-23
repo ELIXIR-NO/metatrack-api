@@ -61,6 +61,21 @@ spec:
               value: INFO
             - name: LOGGING_LEVEL_ROOT
               value: INFO
+            # MinIO (S3-compatible object storage)
+            - name: MINIO_ENDPOINT
+              value: http://minio-service:9000
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secret
+                  key: access-key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secret
+                  key: secret-key
+            - name: MINIO_BUCKET
+              value: uploads
           resources:
             requests:
               cpu: 1000m

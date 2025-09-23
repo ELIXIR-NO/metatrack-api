@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-ingress
+  namespace: elixir-uit-ns11105k
+  annotations:
+    appstore.uninett.no/contact_email: joshua.baskaran@uit.no
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - minio.elixir-uit.sigma2.no
+        - minio-console.elixir-uit.sigma2.no
+      secretName: wildcard-tls
+  rules:
+    - host: minio.elixir-uit.sigma2.no
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-service
+                port:
+                  number: 9000
+    - host: minio-console.elixir-uit.sigma2.no
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-service
+                port:
+                  number: 9001
