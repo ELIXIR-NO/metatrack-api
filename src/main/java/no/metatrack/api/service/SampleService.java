@@ -344,4 +344,27 @@ public class SampleService {
 		return new BatchUpdateSamplesResponse(updatedSamples, errors);
 	}
 
+	public void batchDeleteSamplesByIds(List<String> sampleIds) {
+		List<String> errors = new ArrayList<>();
+		for (String sampleId : sampleIds) {
+			try {
+				Sample sample = sampleRepository.findById(sampleId).orElse(null);
+
+				if (sample != null) {
+					sampleRepository.deleteSampleAndAttributes(sampleId);
+				}
+				else {
+					errors.add(sampleId);
+				}
+			}
+			catch (Exception e) {
+				errors.add(sampleId);
+			}
+		}
+
+		if (!errors.isEmpty()) {
+			throw new RuntimeException("Failed to delete samples: " + String.join(", ", errors));
+		}
+	}
+
 }

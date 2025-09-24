@@ -104,4 +104,13 @@ public class SampleController {
 		return ResponseEntity.ok(response);
 	}
 
+	@DeleteMapping("/batch-delete")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
+	public ResponseEntity<Void> batchDeleteSample(@PathVariable String assayId, @PathVariable String investigationId,
+			@PathVariable String studyId, @Valid @RequestBody List<String> sampleIds) {
+		sampleService.batchDeleteSamplesByIds(sampleIds);
+
+		return ResponseEntity.noContent().build();
+	}
+
 }
