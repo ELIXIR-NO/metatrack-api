@@ -23,10 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SampleService {
@@ -305,6 +302,46 @@ public class SampleService {
 		sample.setRawAttributes(rawAttributes);
 
 		sampleRepository.save(sample);
+	}
+
+	@Transactional
+	public BatchUpdateSamplesResponse batchUpdate(@Valid BatchUpdateSamplesRequest request) {
+		List<SampleResponse> updatedSamples = new ArrayList<>();
+		List<Map<String, String>> errors = new ArrayList<>();
+
+		for (BatchUpdateSamplesRequest.UpdateSampleRequestWithIdField sampleData : request.sampleData()) {
+			try {
+				Sample sample = sampleRepository.findById(sampleData.id()).orElse(null);
+
+				if (sample == null) {
+					errors.add(Map.of(sampleData.id(), "Sample not found"));
+					continue;
+				}
+
+				if (!sample.getName().equals(sampleData.updateSampleRequest().name())
+						&& sampleRepository.existsByName(sampleData.updateSampleRequest().name())) {
+					errors.add(Map.of(sample.getId(), sampleData.updateSampleRequest().name() + " already exists"));
+					continue;
+				}
+
+				List<SampleAttribute> rawAttributes = sampleData.updateSampleRequest()
+					.rawAttributes()
+					.stream()
+					.map(attr -> SampleAttribute.builder().name(attr.attributeName()).value(attr.value()).build())
+					.toList();
+
+				sample.setName(sampleData.updateSampleRequest().name());
+				sample.setRawAttributes(rawAttributes);
+
+				Sample savedSample = sampleRepository.save(sample);
+				updatedSamples.add(convertToSampleResponse(savedSample));
+			}
+			catch (Exception e) {
+				errors.add(Map.of(sampleData.id(), e.getMessage()));
+			}
+		}
+
+		return new BatchUpdateSamplesResponse(updatedSamples, errors);
 	}
 
 }

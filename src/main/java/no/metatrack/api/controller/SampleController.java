@@ -1,9 +1,7 @@
 package no.metatrack.api.controller;
 
 import jakarta.validation.Valid;
-import no.metatrack.api.dto.CreateSampleRequest;
-import no.metatrack.api.dto.SampleResponse;
-import no.metatrack.api.dto.UpdateSampleRequest;
+import no.metatrack.api.dto.*;
 import no.metatrack.api.service.SampleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -94,6 +92,16 @@ public class SampleController {
 			@PathVariable String studyId) {
 		sampleService.uploadSampleTable(assayId, file);
 		return ResponseEntity.ok().build();
+	}
+
+	@PutMapping("/batch-edit")
+	@PreAuthorize("@investigationAccess.hasAtLeast(#investigationId, T(no.metatrack.api.enums.InvestigationRole).WRITER)")
+	public ResponseEntity<BatchUpdateSamplesResponse> batchEditSamples(@PathVariable String investigationId,
+			@PathVariable String studyId, @PathVariable String assayId,
+			@Valid @RequestBody BatchUpdateSamplesRequest request) {
+		BatchUpdateSamplesResponse response = sampleService.batchUpdate(request);
+
+		return ResponseEntity.ok(response);
 	}
 
 }
