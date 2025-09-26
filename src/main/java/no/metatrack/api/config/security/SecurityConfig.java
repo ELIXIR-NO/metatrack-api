@@ -65,6 +65,8 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/actuator/health/**")
 				.permitAll()
+				.requestMatchers("/actuator/prometheus")
+				.permitAll()
 				.requestMatchers("/api/**")
 				.authenticated()
 				.anyRequest()
